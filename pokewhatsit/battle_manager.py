@@ -13,6 +13,9 @@ from .ai_client import AIClient
 class BattleManager:
     """Manages Pokemon battles with AI-powered enemy decisions."""
     
+    # Valid AI difficulty modes
+    VALID_MODES = ['kaizo', 'competitive', 'normal', 'casual']
+    
     def __init__(self, ai_client: Optional[AIClient] = None, fallback_enabled: bool = True, ai_mode: str = 'kaizo'):
         """
         Initialize the battle manager.
@@ -21,10 +24,17 @@ class BattleManager:
             ai_client: AI client for enemy decisions
             fallback_enabled: Whether to fall back to default AI on errors
             ai_mode: AI difficulty mode ('kaizo', 'competitive', 'normal', 'casual')
+            
+        Raises:
+            ValueError: If ai_mode is not valid
         """
         self.ai_client = ai_client
         self.fallback_enabled = fallback_enabled
-        self.ai_mode = ai_mode.lower()
+        
+        ai_mode = ai_mode.lower()
+        if ai_mode not in self.VALID_MODES:
+            raise ValueError(f"Invalid ai_mode '{ai_mode}'. Must be one of: {', '.join(self.VALID_MODES)}")
+        self.ai_mode = ai_mode
         self.battle_log = []
         
     def get_enemy_move(self, battle_state: Dict[str, Any]) -> Dict[str, Any]:
@@ -101,11 +111,11 @@ class BattleManager:
             }
         
         elif self.ai_mode == 'competitive':
-            # Competitive: Prefer high power moves, but consider variety
+            # Competitive: Prefer high power moves with some variety (50/50 between top 2)
             power_moves = [(i, m.get('power', 0)) for i, m in enumerate(available_moves)]
             power_moves.sort(key=lambda x: x[1], reverse=True)
             
-            # Pick from top 2 moves if available
+            # Pick from top 2 moves if available (50/50 probability)
             if len(power_moves) > 1 and power_moves[1][1] > 0:
                 best_move = random.choice([power_moves[0][0], power_moves[1][0]])
             else:

@@ -14,6 +14,9 @@ import requests
 class AIClient:
     """Client for AI endpoint communication."""
     
+    # Valid AI difficulty modes
+    VALID_MODES = ['kaizo', 'competitive', 'normal', 'casual']
+    
     def __init__(self, config: Dict[str, Any], ai_mode: str = 'kaizo'):
         """
         Initialize AI client with configuration.
@@ -21,11 +24,18 @@ class AIClient:
         Args:
             config: Configuration dictionary with AI endpoint settings
             ai_mode: AI difficulty mode ('kaizo', 'competitive', 'normal', 'casual')
+            
+        Raises:
+            ValueError: If ai_mode is not valid
         """
         self.config = config
         self.endpoint_type = config.get('type', 'ollama')
         self.timeout = config.get('timeout', 5)
-        self.ai_mode = ai_mode.lower()
+        
+        ai_mode = ai_mode.lower()
+        if ai_mode not in self.VALID_MODES:
+            raise ValueError(f"Invalid ai_mode '{ai_mode}'. Must be one of: {', '.join(self.VALID_MODES)}")
+        self.ai_mode = ai_mode
         
     def get_battle_decision(self, battle_state: Dict[str, Any]) -> Dict[str, Any]:
         """

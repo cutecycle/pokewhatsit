@@ -57,11 +57,16 @@ class TestBattleManager(unittest.TestCase):
         self.assertLess(decision['move'], len(self.sample_battle_state['available_moves']))
     
     def test_fallback_chooses_strongest_move(self):
-        """Test that fallback AI chooses the strongest move."""
+        """Test that fallback AI in kaizo mode chooses the strongest move."""
         decision = self.battle_manager.get_enemy_move(self.sample_battle_state)
         
-        # Both Tackle and Quick Attack have power 40, so should choose one of them
-        self.assertIn(decision['move'], [0, 1])
+        # In kaizo mode, should choose strongest move (Tackle or Quick Attack, both power 40)
+        # Get max power from available moves
+        max_power = max(m.get('power', 0) for m in self.sample_battle_state['available_moves'])
+        chosen_move = self.sample_battle_state['available_moves'][decision['move']]
+        
+        # Should choose a move with maximum power
+        self.assertEqual(chosen_move.get('power', 0), max_power)
     
     def test_battle_log(self):
         """Test that battle log records decisions."""
@@ -101,6 +106,14 @@ class TestBattleManager(unittest.TestCase):
         casual_manager = BattleManager(ai_client=None, fallback_enabled=True, ai_mode='casual')
         casual_decision = casual_manager.get_enemy_move(self.sample_battle_state)
         self.assertIn('Casual', casual_decision['reasoning'])
+    
+    def test_invalid_ai_mode(self):
+        """Test that invalid AI mode raises ValueError."""
+        with self.assertRaises(ValueError) as context:
+            BattleManager(ai_client=None, fallback_enabled=True, ai_mode='invalid_mode')
+        
+        self.assertIn('Invalid ai_mode', str(context.exception))
+        self.assertIn('invalid_mode', str(context.exception))
 
 
 class TestPokemonBattleSimulator(unittest.TestCase):
@@ -285,6 +298,16 @@ class TestAIClient(unittest.TestCase):
         casual_prompt = casual_client._build_battle_prompt(battle_state)
         self.assertIn('CASUAL', casual_prompt)
         self.assertIn('beginner', casual_prompt.lower())
+    
+    def test_invalid_ai_mode_in_client(self):
+        """Test that AIClient rejects invalid AI modes."""
+        config = {'type': 'ollama'}
+        
+        with self.assertRaises(ValueError) as context:
+            AIClient(config, ai_mode='expert')
+        
+        self.assertIn('Invalid ai_mode', str(context.exception))
+        self.assertIn('expert', str(context.exception))
     
     def test_endpoint_type_validation(self):
         """Test that invalid endpoint types raise errors."""
