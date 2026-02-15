@@ -1,0 +1,31 @@
+# Configuration for Pokemon Emerald AI Integration
+
+# AI Endpoint Configuration
+ai_endpoint:
+  # Type of AI endpoint: "ollama" or "openai"
+  type: "ollama"
+  
+  # Ollama configuration
+  ollama:
+    base_url: "http://localhost:11434"
+    model: "llama2"
+    
+  # OpenAI/Azure OpenAI configuration (optional)
+  openai:
+    api_key: ""  # Set via environment variable OPENAI_API_KEY
+    model: "gpt-3.5-turbo"
+    base_url: ""  # Optional: for Azure OpenAI or custom endpoints
+
+# Game Configuration
+game:
+  # Path to Pokemon Emerald ROM (user must provide)
+  rom_path: ""
+  
+  # Enable AI for enemy decisions
+  ai_enabled: true
+  
+  # Timeout for AI requests in seconds
+  ai_timeout: 5
+  
+  # Fallback to default AI if endpoint fails
+  fallback_enabled: true
