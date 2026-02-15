@@ -5,6 +5,7 @@ Manages Pokemon battles and integrates with AI for enemy decisions.
 This is a simplified simulation of Pokemon Emerald battles.
 """
 
+import random
 from typing import Dict, Any, List, Optional
 from .ai_client import AIClient
 
@@ -194,7 +195,6 @@ class PokemonBattleSimulator:
         damage = ((2 * level / 5 + 2) * power / 50) + 2
         
         # Add some randomness
-        import random
         damage = int(damage * random.uniform(0.85, 1.0))
         
         return max(1, damage)

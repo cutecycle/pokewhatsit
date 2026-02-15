@@ -241,25 +241,21 @@ class TestAIClient(unittest.TestCase):
         self.assertIn('Tackle', prompt)
         self.assertIn('Electric', prompt)
     
-    def test_parse_text_decision(self):
-        """Test text decision parsing."""
-        config = {'type': 'ollama'}
+    def test_endpoint_type_validation(self):
+        """Test that invalid endpoint types raise errors."""
+        config = {'type': 'invalid_type'}
         client = AIClient(config)
         
         battle_state = {
-            'available_moves': [
-                {'name': 'Tackle', 'type': 'Normal', 'power': 40},
-                {'name': 'Quick Attack', 'type': 'Normal', 'power': 40}
-            ]
+            'player_pokemon': {'name': 'Pikachu', 'type': 'Electric', 'hp': 50, 'max_hp': 50, 'level': 20},
+            'enemy_pokemon': {'name': 'Rattata', 'type': 'Normal', 'hp': 40, 'max_hp': 40, 'level': 15},
+            'available_moves': [{'name': 'Tackle', 'type': 'Normal', 'power': 40}]
         }
         
-        # Test move index parsing
-        decision = client._parse_text_decision("I choose move 1", battle_state)
-        self.assertEqual(decision['move'], 1)
+        with self.assertRaises(ValueError) as context:
+            client.get_battle_decision(battle_state)
         
-        # Test move name parsing
-        decision = client._parse_text_decision("I'll use Quick Attack", battle_state)
-        self.assertEqual(decision['move'], 1)
+        self.assertIn('Unknown endpoint type', str(context.exception))
 
 
 if __name__ == '__main__':
