@@ -24,6 +24,13 @@ game:
   # Enable AI for enemy decisions
   ai_enabled: true
   
+  # AI difficulty mode: "kaizo", "competitive", "normal", or "casual"
+  # - kaizo: Extremely difficult, perfect play with optimal strategies (default)
+  # - competitive: Strong strategic play, tournament-level decisions
+  # - normal: Standard balanced gameplay
+  # - casual: Easier, less optimal for beginner-friendly experience
+  ai_mode: "kaizo"
+  
   # Timeout for AI requests in seconds
   ai_timeout: 5
   

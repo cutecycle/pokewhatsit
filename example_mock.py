@@ -89,9 +89,10 @@ def main():
     
     # Initialize with mock AI
     mock_ai = MockAIClient()
-    battle_manager = BattleManager(ai_client=mock_ai, fallback_enabled=False)
+    ai_mode = 'kaizo'  # Demonstrate kaizo mode
+    battle_manager = BattleManager(ai_client=mock_ai, fallback_enabled=False, ai_mode=ai_mode)
     
-    print("\n✓ Mock AI client initialized")
+    print(f"\n✓ Mock AI client initialized (Mode: {ai_mode})")
     
     # Create Pokemon
     player_pokemon = create_pokemon(

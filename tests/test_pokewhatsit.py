@@ -69,7 +69,8 @@ class TestBattleManager(unittest.TestCase):
         
         log = self.battle_manager.get_battle_log()
         self.assertEqual(len(log), 1)
-        self.assertEqual(log[0]['source'], 'Fallback')
+        # Log source now includes AI mode (e.g., 'Fallback-kaizo')
+        self.assertIn('Fallback', log[0]['source'])
         self.assertEqual(log[0]['decision'], decision)
     
     def test_clear_log(self):
@@ -79,6 +80,27 @@ class TestBattleManager(unittest.TestCase):
         
         log = self.battle_manager.get_battle_log()
         self.assertEqual(len(log), 0)
+    
+    def test_ai_mode_initialization(self):
+        """Test that AI mode is properly initialized."""
+        kaizo_manager = BattleManager(ai_client=None, fallback_enabled=True, ai_mode='kaizo')
+        self.assertEqual(kaizo_manager.ai_mode, 'kaizo')
+        
+        casual_manager = BattleManager(ai_client=None, fallback_enabled=True, ai_mode='casual')
+        self.assertEqual(casual_manager.ai_mode, 'casual')
+    
+    def test_different_ai_modes(self):
+        """Test that different AI modes produce different behaviors."""
+        # Test kaizo mode (always strongest)
+        kaizo_manager = BattleManager(ai_client=None, fallback_enabled=True, ai_mode='kaizo')
+        kaizo_decision = kaizo_manager.get_enemy_move(self.sample_battle_state)
+        self.assertIn(kaizo_decision['move'], [0, 1])  # Should pick strongest moves
+        self.assertIn('Kaizo', kaizo_decision['reasoning'])
+        
+        # Test casual mode (random)
+        casual_manager = BattleManager(ai_client=None, fallback_enabled=True, ai_mode='casual')
+        casual_decision = casual_manager.get_enemy_move(self.sample_battle_state)
+        self.assertIn('Casual', casual_decision['reasoning'])
 
 
 class TestPokemonBattleSimulator(unittest.TestCase):
@@ -213,7 +235,7 @@ class TestAIClient(unittest.TestCase):
             }
         }
         
-        client = AIClient(config)
+        client = AIClient(config, ai_mode='kaizo')
         
         battle_state = {
             'player_pokemon': {
@@ -241,6 +263,28 @@ class TestAIClient(unittest.TestCase):
         self.assertIn('Rattata', prompt)
         self.assertIn('Tackle', prompt)
         self.assertIn('Electric', prompt)
+        self.assertIn('KAIZO', prompt)  # Check for AI mode
+    
+    def test_ai_mode_in_prompt(self):
+        """Test that different AI modes generate different prompts."""
+        config = {'type': 'ollama'}
+        battle_state = {
+            'player_pokemon': {'name': 'Pikachu', 'type': 'Electric', 'hp': 50, 'max_hp': 50, 'level': 20},
+            'enemy_pokemon': {'name': 'Rattata', 'type': 'Normal', 'hp': 40, 'max_hp': 40, 'level': 15},
+            'available_moves': [{'name': 'Tackle', 'type': 'Normal', 'power': 40}]
+        }
+        
+        # Test kaizo mode
+        kaizo_client = AIClient(config, ai_mode='kaizo')
+        kaizo_prompt = kaizo_client._build_battle_prompt(battle_state)
+        self.assertIn('KAIZO', kaizo_prompt)
+        self.assertIn('tournament', kaizo_prompt.lower())
+        
+        # Test casual mode
+        casual_client = AIClient(config, ai_mode='casual')
+        casual_prompt = casual_client._build_battle_prompt(battle_state)
+        self.assertIn('CASUAL', casual_prompt)
+        self.assertIn('beginner', casual_prompt.lower())
     
     def test_endpoint_type_validation(self):
         """Test that invalid endpoint types raise errors."""

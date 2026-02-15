@@ -13,16 +13,18 @@ from .ai_client import AIClient
 class BattleManager:
     """Manages Pokemon battles with AI-powered enemy decisions."""
     
-    def __init__(self, ai_client: Optional[AIClient] = None, fallback_enabled: bool = True):
+    def __init__(self, ai_client: Optional[AIClient] = None, fallback_enabled: bool = True, ai_mode: str = 'kaizo'):
         """
         Initialize the battle manager.
         
         Args:
             ai_client: AI client for enemy decisions
             fallback_enabled: Whether to fall back to default AI on errors
+            ai_mode: AI difficulty mode ('kaizo', 'competitive', 'normal', 'casual')
         """
         self.ai_client = ai_client
         self.fallback_enabled = fallback_enabled
+        self.ai_mode = ai_mode.lower()
         self.battle_log = []
         
     def get_enemy_move(self, battle_state: Dict[str, Any]) -> Dict[str, Any]:
@@ -50,7 +52,7 @@ class BattleManager:
                 move_index = decision.get('move', 0)
                 
                 if 0 <= move_index < len(available_moves):
-                    self._log_decision(decision, "AI")
+                    self._log_decision(decision, f"AI-{self.ai_mode}")
                     return decision
                 else:
                     if self.fallback_enabled:
@@ -68,33 +70,79 @@ class BattleManager:
     
     def _fallback_decision(self, battle_state: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Simple fallback AI logic when AI endpoint is unavailable.
+        Fallback AI logic when AI endpoint is unavailable.
         
-        Uses basic type effectiveness and power-based logic.
+        Behavior varies by AI mode:
+        - kaizo: Always chooses optimal move (highest power/effectiveness)
+        - competitive: Strong strategic choices
+        - normal: Balanced play
+        - casual: Sometimes suboptimal for easier gameplay
         """
         available_moves = battle_state.get('available_moves', [])
         player_pokemon = battle_state.get('player_pokemon', {})
         enemy_pokemon = battle_state.get('enemy_pokemon', {})
         
         if not available_moves:
-            return {"move": 0, "reasoning": "No moves available"}
+            return {"move": 0, "reasoning": f"Fallback AI ({self.ai_mode}): No moves available"}
         
-        # Simple logic: Choose the move with highest power
-        best_move = 0
-        best_power = 0
+        if self.ai_mode == 'kaizo':
+            # Kaizo: Always pick strongest move
+            best_move = 0
+            best_power = 0
+            for i, move in enumerate(available_moves):
+                power = move.get('power', 0)
+                if power > best_power:
+                    best_power = power
+                    best_move = i
+            
+            decision = {
+                "move": best_move,
+                "reasoning": f"Fallback AI (Kaizo): Maximum power strategy - {available_moves[best_move].get('name')} (power: {best_power})"
+            }
         
-        for i, move in enumerate(available_moves):
-            power = move.get('power', 0)
-            if power > best_power:
-                best_power = power
-                best_move = i
+        elif self.ai_mode == 'competitive':
+            # Competitive: Prefer high power moves, but consider variety
+            power_moves = [(i, m.get('power', 0)) for i, m in enumerate(available_moves)]
+            power_moves.sort(key=lambda x: x[1], reverse=True)
+            
+            # Pick from top 2 moves if available
+            if len(power_moves) > 1 and power_moves[1][1] > 0:
+                best_move = random.choice([power_moves[0][0], power_moves[1][0]])
+            else:
+                best_move = power_moves[0][0]
+            
+            decision = {
+                "move": best_move,
+                "reasoning": f"Fallback AI (Competitive): Strategic choice - {available_moves[best_move].get('name')}"
+            }
         
-        decision = {
-            "move": best_move,
-            "reasoning": f"Fallback AI: Selected strongest move (power: {best_power})"
-        }
+        elif self.ai_mode == 'casual':
+            # Casual: Random move selection for easier gameplay
+            best_move = random.randint(0, len(available_moves) - 1)
+            decision = {
+                "move": best_move,
+                "reasoning": f"Fallback AI (Casual): Relaxed play - {available_moves[best_move].get('name')}"
+            }
         
-        self._log_decision(decision, "Fallback")
+        else:  # normal
+            # Normal: Balanced - prefer power moves but with some randomness
+            power_moves = [(i, m.get('power', 0)) for i, m in enumerate(available_moves) if m.get('power', 0) > 0]
+            
+            if power_moves:
+                # 70% chance to pick strongest, 30% random from power moves
+                if random.random() < 0.7:
+                    best_move = max(power_moves, key=lambda x: x[1])[0]
+                else:
+                    best_move = random.choice(power_moves)[0]
+            else:
+                best_move = random.randint(0, len(available_moves) - 1)
+            
+            decision = {
+                "move": best_move,
+                "reasoning": f"Fallback AI (Normal): Balanced strategy - {available_moves[best_move].get('name')}"
+            }
+        
+        self._log_decision(decision, f"Fallback-{self.ai_mode}")
         return decision
     
     def _log_decision(self, decision: Dict[str, Any], source: str):

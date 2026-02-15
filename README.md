@@ -9,15 +9,20 @@ This project demonstrates integration of modern Large Language Models (LLMs) int
 ## Features
 
 - **Real Emulator Integration**: Works with actual Pokemon Emerald ROMs via mGBA emulator
+- **AI Difficulty Modes**: Choose from multiple AI personalities:
+  - **Kaizo** (default): Extremely competitive, perfect play with optimal strategies
+  - **Competitive**: Strong strategic play, tournament-level decisions
+  - **Normal**: Standard balanced gameplay
+  - **Casual**: Easier, beginner-friendly for relaxed play
 - **AI-Powered Enemy Decisions**: Enemy Pokemon moves are chosen by AI endpoints
 - **Multiple AI Backend Support**: 
   - Ollama (local LLM)
   - OpenAI API
   - Azure OpenAI
   - Any OpenAI-compatible endpoint
-- **Intelligent Fallback**: Falls back to simple AI logic if endpoint is unavailable
+- **Intelligent Fallback**: Falls back to mode-appropriate AI logic if endpoint is unavailable
 - **Battle Simulation**: Includes a demo battle simulator for testing (no ROM required)
-- **Configurable**: Easy YAML configuration for different AI providers
+- **Configurable**: Easy YAML configuration for different AI providers and modes
 - **Memory Reading/Writing**: Direct integration with Pokemon Emerald game memory
 
 ## Installation
@@ -91,6 +96,37 @@ python demo.py
 ## Configuration
 
 Edit `config.yml` to configure your AI endpoint:
+
+### AI Difficulty Modes
+
+Set the `ai_mode` in `config.yml`:
+
+```yaml
+game:
+  ai_mode: "kaizo"  # Options: "kaizo", "competitive", "normal", "casual"
+```
+
+**Mode Descriptions:**
+
+- **Kaizo** (default): Named after the extremely difficult ROM hacks, this mode plays at peak performance
+  - Always chooses optimal moves with tournament-level strategy
+  - Considers exact damage calculations, type effectiveness, and speed tiers
+  - Perfect play with no mercy - ideal for challenge runs
+  
+- **Competitive**: Strong strategic play suitable for competitive battles
+  - Makes solid competitive decisions with calculated risks
+  - Prioritizes super effective moves and strategic advantages
+  - Tournament-ready but not quite perfect
+  
+- **Normal**: Balanced gameplay for standard experience
+  - Good mix of offensive and defensive strategies
+  - Mostly optimal but allows occasional suboptimal choices
+  - Classic Pokemon battle experience
+  
+- **Casual**: Relaxed, beginner-friendly gameplay
+  - Sometimes chooses weaker moves for variety
+  - Prioritizes fun and accessibility over winning
+  - Great for learning or relaxed play
 
 ### Ollama (Local)
 

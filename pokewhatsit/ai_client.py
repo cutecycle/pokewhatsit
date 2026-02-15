@@ -14,16 +14,18 @@ import requests
 class AIClient:
     """Client for AI endpoint communication."""
     
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], ai_mode: str = 'kaizo'):
         """
         Initialize AI client with configuration.
         
         Args:
             config: Configuration dictionary with AI endpoint settings
+            ai_mode: AI difficulty mode ('kaizo', 'competitive', 'normal', 'casual')
         """
         self.config = config
         self.endpoint_type = config.get('type', 'ollama')
         self.timeout = config.get('timeout', 5)
+        self.ai_mode = ai_mode.lower()
         
     def get_battle_decision(self, battle_state: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -136,7 +138,49 @@ class AIClient:
         enemy_pokemon = battle_state.get('enemy_pokemon', {})
         available_moves = battle_state.get('available_moves', [])
         
-        prompt = f"""You are controlling the enemy Pokemon in a battle.
+        # Define AI mode personality and strategy
+        mode_descriptions = {
+            'kaizo': {
+                'personality': 'an extremely skilled Pokemon master with perfect game knowledge',
+                'strategy': 'You must play optimally with tournament-level strategies. Consider:\n'
+                           '- Exact damage calculations and KO potential\n'
+                           '- Type effectiveness multipliers (2x super effective, 0.5x not very effective)\n'
+                           '- Speed tiers and move priority\n'
+                           '- Status moves for competitive advantage\n'
+                           '- Setup opportunities and sweeping potential\n'
+                           '- Predicting opponent switches and punishing them\n'
+                           'Play as if this is a high-stakes tournament match. No mercy.'
+            },
+            'competitive': {
+                'personality': 'a strong competitive Pokemon trainer',
+                'strategy': 'Use solid competitive strategies:\n'
+                           '- Prioritize super effective moves when available\n'
+                           '- Consider type matchups carefully\n'
+                           '- Use status moves strategically\n'
+                           '- Make calculated risks for advantage'
+            },
+            'normal': {
+                'personality': 'a balanced Pokemon trainer',
+                'strategy': 'Play with standard strategy:\n'
+                           '- Use effective moves when obvious\n'
+                           '- Mix offensive and defensive play\n'
+                           '- Occasional suboptimal choices are acceptable'
+            },
+            'casual': {
+                'personality': 'a friendly, beginner-level Pokemon trainer',
+                'strategy': 'Play in a relaxed, beginner-friendly way:\n'
+                           '- Sometimes choose weaker moves\n'
+                           '- Prioritize variety over optimal strategy\n'
+                           '- Make the battle fun and accessible'
+            }
+        }
+        
+        mode_info = mode_descriptions.get(self.ai_mode, mode_descriptions['kaizo'])
+        
+        prompt = f"""You are {mode_info['personality']} controlling the enemy Pokemon in a battle.
+
+DIFFICULTY MODE: {self.ai_mode.upper()}
+{mode_info['strategy']}
 
 Enemy Pokemon (yours): {enemy_pokemon.get('name', 'Unknown')}
 - Type: {enemy_pokemon.get('type', 'Unknown')}
@@ -154,7 +198,7 @@ Available moves:
             prompt += f"{i}. {move.get('name', 'Unknown')} (Type: {move.get('type', 'Unknown')}, Power: {move.get('power', 0)})\n"
         
         prompt += """
-Choose the best move for this situation. Respond with JSON format:
+Choose the best move for this situation based on the difficulty mode. Respond with JSON format:
 {
   "move": <index of move to use (0-3)>,
   "reasoning": "<brief explanation of why this move was chosen>"

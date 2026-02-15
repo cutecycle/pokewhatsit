@@ -59,8 +59,11 @@ def run_demo():
     config = load_config('config.yml')
     print(f"\nLoaded configuration:")
     print(f"  AI Endpoint: {config['ai_endpoint']['type']}")
+    print(f"  AI Mode: {config['game'].get('ai_mode', 'kaizo')}")
     print(f"  AI Enabled: {config['game']['ai_enabled']}")
     print(f"  Fallback Enabled: {config['game']['fallback_enabled']}")
+    
+    ai_mode = config['game'].get('ai_mode', 'kaizo')
     
     # Initialize AI client
     ai_client = None
@@ -68,8 +71,8 @@ def run_demo():
         try:
             ai_endpoint_config = config['ai_endpoint'].copy()
             ai_endpoint_config['timeout'] = config['game']['ai_timeout']
-            ai_client = AIClient(ai_endpoint_config)
-            print(f"\n✓ AI client initialized ({config['ai_endpoint']['type']})")
+            ai_client = AIClient(ai_endpoint_config, ai_mode=ai_mode)
+            print(f"\n✓ AI client initialized ({config['ai_endpoint']['type']}, mode: {ai_mode})")
         except Exception as e:
             print(f"\n✗ Failed to initialize AI client: {e}")
             if not config['game']['fallback_enabled']:
@@ -80,7 +83,8 @@ def run_demo():
     # Initialize battle manager
     battle_manager = BattleManager(
         ai_client=ai_client,
-        fallback_enabled=config['game']['fallback_enabled']
+        fallback_enabled=config['game']['fallback_enabled'],
+        ai_mode=ai_mode
     )
     
     # Create Pokemon for the battle

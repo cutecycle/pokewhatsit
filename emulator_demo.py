@@ -67,7 +67,9 @@ def run_ai_battle(rom_path: str):
     
     # Load configuration
     config = load_config('config.yml')
+    ai_mode = config['game'].get('ai_mode', 'kaizo')
     print(f"AI Endpoint: {config['ai_endpoint']['type']}")
+    print(f"AI Mode: {ai_mode}")
     print(f"Fallback Enabled: {config['game']['fallback_enabled']}")
     
     # Initialize AI client
@@ -76,7 +78,7 @@ def run_ai_battle(rom_path: str):
         try:
             ai_endpoint_config = config['ai_endpoint'].copy()
             ai_endpoint_config['timeout'] = config['game']['ai_timeout']
-            ai_client = AIClient(ai_endpoint_config)
+            ai_client = AIClient(ai_endpoint_config, ai_mode=ai_mode)
             print(f"✓ AI client initialized")
         except Exception as e:
             print(f"✗ AI client initialization failed: {e}")
@@ -87,7 +89,8 @@ def run_ai_battle(rom_path: str):
     # Initialize battle manager
     battle_manager = BattleManager(
         ai_client=ai_client,
-        fallback_enabled=config['game']['fallback_enabled']
+        fallback_enabled=config['game']['fallback_enabled'],
+        ai_mode=ai_mode
     )
     
     # Initialize emulator
