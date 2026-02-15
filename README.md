@@ -167,12 +167,56 @@ pokewhatsit/
 
 ## Future Enhancements
 
-- **Real Emulator Integration**: Connect to an actual Pokemon Emerald emulator (mGBA) via memory reading/writing
+### Real Emulator Integration
+
+To integrate with an actual Pokemon Emerald emulator, you would need to:
+
+1. **Use mGBA or similar emulator** with scripting support
+2. **Memory Reading**: Read game memory to extract battle state
+   - Pokemon stats (HP, level, type)
+   - Available moves
+   - Battle conditions
+3. **Memory Writing**: Write AI decisions back to game memory
+   - Override the enemy AI decision routine
+   - Inject the selected move into the battle system
+4. **Memory Addresses**: Document Pokemon Emerald memory locations
+   - Battle state: `0x02024744` (example)
+   - Enemy move selection: `0x02024BE4` (example)
+   - Pokemon data structures
+
+#### Example Integration Approach:
+
+```python
+import mgba.core
+import mgba.memory
+
+# Load Pokemon Emerald ROM
+core = mgba.core.load_path('pokemon_emerald.gba')
+
+# Hook into battle AI routine
+def on_enemy_ai_request():
+    # Read battle state from memory
+    battle_state = read_battle_state_from_memory(core)
+    
+    # Get AI decision
+    decision = battle_manager.get_enemy_move(battle_state)
+    
+    # Write decision back to memory
+    write_move_to_memory(core, decision['move'])
+
+# Install hook
+core.install_hook(0x08123456, on_enemy_ai_request)  # AI routine address
+```
+
+### Other Planned Enhancements
+
 - **Advanced Battle Context**: Include more battle state information (status effects, weather, abilities, etc.)
 - **Move Prediction**: Have AI predict player's next move
 - **Learning from Battles**: Fine-tune AI based on battle outcomes
 - **Multi-turn Strategy**: Allow AI to plan multiple turns ahead
 - **Tournament Mode**: Run automated tournaments with AI trainers
+- **Replay System**: Record and analyze battles
+- **Web Interface**: Browser-based battle viewer with AI explanations
 
 ## Contributing
 
