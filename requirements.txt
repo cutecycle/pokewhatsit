@@ -1,2 +1,6 @@
 requests>=2.31.0
 pyyaml>=6.0.1
+
+# Optional: For real emulator integration
+# Uncomment to use real Pokemon Emerald ROM
+# mgba-py>=0.10.0

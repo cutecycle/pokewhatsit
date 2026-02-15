@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pokewhatsit.battle_manager import BattleManager, PokemonBattleSimulator
 from pokewhatsit.ai_client import AIClient
 from pokewhatsit.config import load_config, get_default_config, merge_configs
+from pokewhatsit.emulator_adapter import MGBA_AVAILABLE, SPECIES_NAMES, MOVE_DATA
 
 
 class TestBattleManager(unittest.TestCase):
@@ -256,6 +257,40 @@ class TestAIClient(unittest.TestCase):
             client.get_battle_decision(battle_state)
         
         self.assertIn('Unknown endpoint type', str(context.exception))
+
+
+class TestEmulatorAdapter(unittest.TestCase):
+    """Test EmulatorAdapter functionality (without requiring mgba installation)."""
+    
+    def test_mgba_availability_flag(self):
+        """Test that MGBA_AVAILABLE flag is set."""
+        self.assertIsInstance(MGBA_AVAILABLE, bool)
+    
+    def test_species_names_mapping(self):
+        """Test that species names are defined."""
+        self.assertIsInstance(SPECIES_NAMES, dict)
+        self.assertEqual(SPECIES_NAMES[0], "None")
+        self.assertEqual(SPECIES_NAMES[25], "Pikachu")
+        self.assertEqual(SPECIES_NAMES[257], "Blaziken")
+    
+    def test_move_data_mapping(self):
+        """Test that move data is defined."""
+        self.assertIsInstance(MOVE_DATA, dict)
+        self.assertIn('name', MOVE_DATA[0])
+        self.assertIn('type', MOVE_DATA[0])
+        self.assertIn('power', MOVE_DATA[0])
+        
+        # Test specific moves
+        self.assertEqual(MOVE_DATA[93]['name'], "Thunderbolt")
+        self.assertEqual(MOVE_DATA[93]['power'], 90)
+    
+    @unittest.skipIf(not MGBA_AVAILABLE, "mgba-py not installed")
+    def test_emulator_initialization_fails_without_rom(self):
+        """Test that EmulatorAdapter fails gracefully without ROM."""
+        from pokewhatsit.emulator_adapter import EmulatorAdapter
+        
+        with self.assertRaises(RuntimeError):
+            EmulatorAdapter("/nonexistent/rom.gba")
 
 
 if __name__ == '__main__':

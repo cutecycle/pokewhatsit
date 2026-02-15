@@ -8,6 +8,7 @@ This project demonstrates integration of modern Large Language Models (LLMs) int
 
 ## Features
 
+- **Real Emulator Integration**: Works with actual Pokemon Emerald ROMs via mGBA emulator
 - **AI-Powered Enemy Decisions**: Enemy Pokemon moves are chosen by AI endpoints
 - **Multiple AI Backend Support**: 
   - Ollama (local LLM)
@@ -15,8 +16,9 @@ This project demonstrates integration of modern Large Language Models (LLMs) int
   - Azure OpenAI
   - Any OpenAI-compatible endpoint
 - **Intelligent Fallback**: Falls back to simple AI logic if endpoint is unavailable
-- **Battle Simulation**: Includes a demo battle simulator for testing
+- **Battle Simulation**: Includes a demo battle simulator for testing (no ROM required)
 - **Configurable**: Easy YAML configuration for different AI providers
+- **Memory Reading/Writing**: Direct integration with Pokemon Emerald game memory
 
 ## Installation
 
@@ -54,6 +56,20 @@ python example_mock.py
 ```
 
 This demonstrates the complete flow with a mock AI that returns strategic decisions with reasoning.
+
+### Run with Real Emulator (Requires ROM)
+
+```bash
+# Install mGBA Python bindings
+pip install mgba-py
+
+# Run with your Pokemon Emerald ROM
+python emulator_demo.py /path/to/pokemon_emerald.gba
+```
+
+This integrates with a real Pokemon Emerald ROM via mGBA emulator. The AI will automatically control enemy Pokemon decisions during battles.
+
+**Note**: You must provide your own Pokemon Emerald ROM file (.gba). ROM files are not included with this repository.
 
 ### Configure for OpenAI
 
@@ -197,59 +213,90 @@ python demo.py
 ```
 pokewhatsit/
 ├── pokewhatsit/
-│   ├── __init__.py          # Package initialization
-│   ├── ai_client.py         # AI endpoint communication
-│   ├── battle_manager.py    # Battle logic and AI integration
-│   └── config.py            # Configuration loading
-├── demo.py                  # Demo battle simulator
-├── config.yml               # Configuration file
-└── requirements.txt         # Python dependencies
+│   ├── __init__.py            # Package initialization
+│   ├── ai_client.py           # AI endpoint communication
+│   ├── battle_manager.py      # Battle logic and AI integration
+│   ├── config.py              # Configuration loading
+│   └── emulator_adapter.py    # mGBA emulator integration (NEW!)
+├── demo.py                    # Demo battle simulator
+├── emulator_demo.py           # Real emulator demo (NEW!)
+├── example_mock.py            # Mock AI example
+├── config.yml                 # Configuration file
+└── requirements.txt           # Python dependencies
 ```
 
-## Future Enhancements
+### Component Overview
 
-### Real Emulator Integration
+- **ai_client.py**: Handles communication with AI endpoints (Ollama, OpenAI)
+- **battle_manager.py**: Manages battle flow and integrates AI decisions
+- **emulator_adapter.py**: Bridges mGBA emulator with the AI system
+- **config.py**: YAML configuration management
+- **demo.py**: Simulated battle demo (no ROM required)
+- **emulator_demo.py**: Real Pokemon Emerald integration via mGBA
+- **example_mock.py**: Mock AI demonstration
 
-To integrate with an actual Pokemon Emerald emulator, you would need to:
+## Real Emulator Integration
 
-1. **Use mGBA or similar emulator** with scripting support
-2. **Memory Reading**: Read game memory to extract battle state
-   - Pokemon stats (HP, level, type)
-   - Available moves
-   - Battle conditions
-3. **Memory Writing**: Write AI decisions back to game memory
-   - Override the enemy AI decision routine
-   - Inject the selected move into the battle system
-4. **Memory Addresses**: Document Pokemon Emerald memory locations
-   - Battle state: `0x02024744` (example)
-   - Enemy move selection: `0x02024BE4` (example)
-   - Pokemon data structures
+This project now includes **full integration with mGBA emulator** for playing with a real Pokemon Emerald ROM!
 
-#### Example Integration Approach:
+### How It Works
+
+1. **Emulator Adapter** (`emulator_adapter.py`): Bridges mGBA with the AI system
+   - Reads battle state from game memory (Pokemon stats, HP, moves)
+   - Writes AI decisions back to game memory
+   - Monitors battle start/end events
+
+2. **Memory Addresses**: Pre-configured Pokemon Emerald (U.S.) memory layout
+   - Battle state structures at known addresses
+   - Pokemon data (HP, level, species, moves)
+   - AI decision registers
+
+3. **Real-time AI**: During battles, the system:
+   - Detects when enemy needs to make a decision
+   - Extracts current battle state from game memory
+   - Queries AI endpoint for strategic decision
+   - Injects decision back into game
+
+### Running with Real ROM
+
+```bash
+# Install mGBA bindings
+pip install mgba-py
+
+# Run the emulator demo
+python emulator_demo.py /path/to/pokemon_emerald.gba
+```
+
+The emulator will run and wait for battles. When a battle starts:
+- Enemy AI decisions are routed to your configured AI endpoint
+- AI reasoning is displayed in the console
+- Battles play out with intelligent enemy strategies
+
+### Memory Addresses Used
+
+Key Pokemon Emerald (U.S.) memory locations:
 
 ```python
-import mgba.core
-import mgba.memory
-
-# Load Pokemon Emerald ROM
-core = mgba.core.load_path('pokemon_emerald.gba')
-
-# Hook into battle AI routine
-def on_enemy_ai_request():
-    # Read battle state from memory
-    battle_state = read_battle_state_from_memory(core)
-    
-    # Get AI decision
-    decision = battle_manager.get_enemy_move(battle_state)
-    
-    # Write decision back to memory
-    write_move_to_memory(core, decision['move'])
-
-# Install hook
-core.install_hook(0x08123456, on_enemy_ai_request)  # AI routine address
+MEMORY_ADDRESSES = {
+    'battle_flags': 0x02022B4C,       # Battle active status
+    'player_pokemon_base': 0x02024284, # Player's active Pokemon
+    'enemy_pokemon_base': 0x02024744,  # Enemy's active Pokemon
+    'enemy_move_1': 0x020247A8,        # Enemy move slots
+    'ai_action': 0x02023D7A,           # AI decision register
+}
 ```
 
-### Other Planned Enhancements
+**Note**: Memory addresses are for Pokemon Emerald (U.S. version). Other versions may require address adjustments.
+
+### Troubleshooting
+
+**"mgba-py not installed"**: Install with `pip install mgba-py`
+
+**ROM not loading**: Ensure you have a valid Pokemon Emerald .gba ROM file
+
+**AI not activating**: The current implementation polls for battle state changes. Some ROM versions or battle types may require address adjustments.
+
+**Wrong moves being used**: Memory addresses may need adjustment for your specific ROM version. Use mGBA's built-in debugger to verify addresses.
 
 - **Advanced Battle Context**: Include more battle state information (status effects, weather, abilities, etc.)
 - **Move Prediction**: Have AI predict player's next move
