@@ -138,7 +138,7 @@ class EmulatorAdapter:
             flags = self.read_u32(MEMORY_ADDRESSES['battle_flags'])
             # Battle active flag (bit 0)
             return (flags & 0x01) != 0
-        except:
+        except Exception:
             return False
     
     def read_u8(self, address: int) -> int:
