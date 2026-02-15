@@ -31,6 +31,47 @@ cd pokewhatsit
 pip install -r requirements.txt
 ```
 
+3. (Optional) Set up Ollama for local AI:
+```bash
+# Install Ollama from https://ollama.ai
+ollama pull llama2
+```
+
+## Quick Start
+
+### Run the Demo (with Fallback AI)
+
+```bash
+python demo.py
+```
+
+This runs a simulated Pokemon battle. If Ollama is not running, it will automatically fall back to simple rule-based AI.
+
+### Run the Mock Example
+
+```bash
+python example_mock.py
+```
+
+This demonstrates the complete flow with a mock AI that returns strategic decisions with reasoning.
+
+### Configure for OpenAI
+
+Edit `config.yml`:
+```yaml
+ai_endpoint:
+  type: "openai"
+  openai:
+    api_key: "your-api-key"  # Or set OPENAI_API_KEY env var
+    model: "gpt-3.5-turbo"
+```
+
+Then run:
+```bash
+export OPENAI_API_KEY=your-key-here
+python demo.py
+```
+
 ## Configuration
 
 Edit `config.yml` to configure your AI endpoint:
