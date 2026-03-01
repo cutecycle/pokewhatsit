@@ -1,14 +1,11 @@
 """
 Pokemon Crystal AI Emulator
-Controls enemy Pokemon battle decisions via GitHub Models LLM
+Controls enemy Pokemon battle decisions via Copilot CLI (Claude Opus)
 """
-import ctypes
-import ctypes.wintypes
 import json
 import logging
 import os
 import sys
-from openai import OpenAI
 from pyboy import PyBoy
 import threading
 import time
@@ -157,63 +154,162 @@ def pokemon_name(pid):
 def move_name(mid):
     return MOVE_NAMES.get(mid, f"???({mid})")
 
+# Reverse lookup: move name → ID (case-insensitive)
+MOVE_NAME_TO_ID = {name.lower(): mid for mid, name in MOVE_NAMES.items()}
+
 # ---------------------------------------------------------------------------
-# Token / LLM setup
+# Token / LLM setup — uses Copilot CLI as the AI provider
 # ---------------------------------------------------------------------------
 
-def _read_credential(target):
-    """Read a credential blob from Windows Credential Manager."""
-    class CREDENTIAL(ctypes.Structure):
-        _fields_ = [
-            ("Flags", ctypes.wintypes.DWORD), ("Type", ctypes.wintypes.DWORD),
-            ("TargetName", ctypes.wintypes.LPWSTR), ("Comment", ctypes.wintypes.LPWSTR),
-            ("LastWritten", ctypes.wintypes.FILETIME),
-            ("CredentialBlobSize", ctypes.wintypes.DWORD),
-            ("CredentialBlob", ctypes.POINTER(ctypes.c_char)),
-            ("Persist", ctypes.wintypes.DWORD),
-            ("AttributeCount", ctypes.wintypes.DWORD), ("Attributes", ctypes.c_void_p),
-            ("TargetAlias", ctypes.wintypes.LPWSTR), ("UserName", ctypes.wintypes.LPWSTR),
-        ]
-    pcred = ctypes.POINTER(CREDENTIAL)()
-    ok = ctypes.windll.advapi32.CredReadW(target, 1, 0, ctypes.byref(pcred))
-    if not ok:
+COPILOT_MODEL = "claude-sonnet-4.6"
+SESSION_FILE = os.path.join(os.path.dirname(__file__) or ".", ".copilot_session")
+
+class CopilotSession:
+    """Persistent Copilot CLI session that survives restarts."""
+    
+    def __init__(self, model=COPILOT_MODEL):
+        import uuid
+        self.model = model
+        self._lock = threading.Lock()
+        self._call_count = 0
+        self._max_calls = 80  # rotate session before context gets too large
+        # Try to load existing session ID from disk
+        self.session_id = self._load_session_id() or str(uuid.uuid4())
+        self._initialized = self.session_id == self._load_session_id()
+        self._save_session_id()
+    
+    def _load_session_id(self):
+        try:
+            with open(SESSION_FILE, "r") as f:
+                sid = f.read().strip()
+                if len(sid) == 36:  # valid UUID length
+                    return sid
+        except FileNotFoundError:
+            pass
         return None
-    blob = ctypes.string_at(pcred.contents.CredentialBlob, pcred.contents.CredentialBlobSize)
-    return blob.decode("utf-8")
+    
+    def _save_session_id(self):
+        with open(SESSION_FILE, "w") as f:
+            f.write(self.session_id)
+        log.info("Session ID: %s (calls: %d/%d)", self.session_id[:8],
+                 self._call_count, self._max_calls)
+    
+    def _rotate_if_needed(self):
+        """Start a fresh session if context is getting too large."""
+        import uuid
+        if self._call_count >= self._max_calls:
+            old = self.session_id[:8]
+            self.session_id = str(uuid.uuid4())
+            self._call_count = 0
+            self._initialized = False
+            self._save_session_id()
+            log.info("🔄 Session rotated (%s → %s) after %d calls",
+                     old, self.session_id[:8], self._max_calls)
+    
+    def call(self, prompt, timeout=30):
+        """Call Copilot CLI with session resume, return raw text. Thread-safe."""
+        import subprocess
+        with self._lock:
+            self._rotate_if_needed()
+            cmd = ["copilot", "--model", self.model, "-s",
+                   "--resume", self.session_id, "-p", prompt]
+            try:
+                result = subprocess.run(
+                    cmd, capture_output=True, text=True,
+                    timeout=timeout, encoding="utf-8"
+                )
+                self._call_count += 1
+                return result.stdout.strip() if result.stdout else None
+            except subprocess.TimeoutExpired:
+                log.warning("Copilot CLI timed out")
+                return None
+            except Exception as e:
+                log.warning("Copilot CLI error: %s", e)
+                return None
+    
+    def init_session(self, system_context):
+        """Send initial context to establish the session (skips if resuming)."""
+        if self._initialized:
+            log.info("Resuming existing session: %s", self.session_id[:8])
+            return
+        self.call(system_context, timeout=45)
+        self._initialized = True
+        log.info("Copilot session initialized: %s", self.session_id[:8])
 
-def get_github_token():
-    """Resolve a GitHub token: env var > Copilot CLI credential store."""
-    for var in ("GH_TOKEN", "GITHUB_TOKEN"):
-        tok = os.environ.get(var)
-        if tok:
-            log.info("Using token from $%s", var)
-            return tok
-    tok = _read_credential("copilot-cli/https://github.com:cutecycle")
-    if tok:
-        log.info("Using token from Copilot CLI credential store")
-        return tok
-    return None
+def parse_json_response(raw, expected_key=None):
+    """Robustly extract JSON from AI response text.
+    If expected_key is set, find the JSON object containing that key."""
+    if not raw:
+        return None
+    import re
+    text = raw.strip()
+    # Strip markdown code fences
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+        if "```" in text:
+            text = text.rsplit("```", 1)[0]
+        text = text.strip()
+    # Find all JSON objects in the text
+    objects = []
+    for m in re.finditer(r'\{[^{}]*\}', text):
+        try:
+            obj = json.loads(m.group())
+            objects.append(obj)
+        except json.JSONDecodeError:
+            pass
+    if not objects:
+        return None
+    # If we have an expected key, find the object with that key
+    if expected_key:
+        for obj in objects:
+            if expected_key in obj:
+                return obj
+    return objects[0]
 
-MODEL = "openai/gpt-4.1-mini"
-
-SYSTEM_PROMPT = """\
+BATTLE_SYSTEM_PROMPT = """\
 You are the enemy Pokemon's battle AI in Pokemon Crystal. You control a wild or trainer's Pokemon \
 fighting against the player. Pick the best move to defeat the player's Pokemon.
 Respond with ONLY valid JSON — no markdown, no explanation outside the JSON.
 
 JSON format:
-{"action": "move", "move_index": <0-3>, "reasoning": "<short explanation>"}
+{{"action": "move", "move_index": <0-3>, "reasoning": "<short explanation>"}}
 
 You can ONLY use "move". You cannot switch or use items — you are a wild/trainer Pokemon.
 move_index corresponds to the move slot (0 = first move, 1 = second, etc).
 
-Be strategic: consider HP, type advantages, and move power."""
+VIBE: {vibe}
+Play according to the vibe. If the vibe says "not fatal", avoid overkill on low-HP opponents."""
+
+ENCOUNTER_SYSTEM_PROMPT = """\
+You decide what wild Pokemon appears next in Pokemon Crystal. Given the player's team and level, \
+pick a species ID (1-251) and reason. Respond with ONLY valid JSON.
+
+JSON format:
+{{"species_id": <1-251>, "reasoning": "<short explanation>"}}
+
+VIBE: {vibe}
+Choose encounters that match the vibe. For "exciting but not fatal", pick Pokemon that are \
+challenging but not overwhelmingly strong. Surprise the player with variety."""
+
+DIALOGUE_SYSTEM_PROMPT = """\
+You are rewriting NPC dialogue for Pokemon Crystal. You receive the original text and must \
+write a replacement that fits the vibe. Keep it SHORT — max 2 lines of 18 characters each.
+Respond with ONLY valid JSON — no markdown, no explanation outside the JSON.
+
+JSON format:
+{{"line1": "<max 18 chars>", "line2": "<max 18 chars>"}}
+
+IMPORTANT: Use ONLY letters A-Z a-z, digits 0-9, and spaces. NO punctuation at all.
+
+VIBE: {vibe}
+Rewrite dialogue to match this vibe while keeping the general meaning."""
 
 class AIConfig:
     """Configuration for AI"""
-    def __init__(self, timeout=10):
+    def __init__(self, timeout=10, vibe="exciting but not fatal"):
         self.timeout = timeout
         self.enabled = True
+        self.vibe = vibe
 
 class PokemonBattleState:
     """Extracts and represents battle state from game memory"""
@@ -227,6 +323,18 @@ class PokemonBattleState:
     ENEMY_MOVES_ADDR = 0xD208       # wEnemyMonMoves (4 bytes)
     ENEMY_MOVE_NUM_ADDR = 0xC6E9    # wCurEnemyMoveNum (0-3, which move enemy uses)
     PLAYER_TURNS_ADDR = 0xC6DD      # wPlayerTurnsTaken
+    TEMP_WILD_SPECIES_ADDR = 0xD22E # wTempWildMonSpecies
+    ENEMY_LEVEL_ADDR = 0xD213       # wEnemyMonLevel
+    TILEMAP_ADDR = 0xC4A0           # wTilemap (20x18 tiles)
+    TILEMAP_W = 20
+    TILEMAP_H = 18
+    # Party info
+    PARTY_COUNT_ADDR = 0xDCD7       # Number of party Pokemon
+    PARTY_SPECIES_ADDR = 0xDCD8     # Species list (6 bytes)
+    PARTY1_LEVEL_ADDR = 0xDCFE      # Party mon 1 level
+    # Map location
+    MAP_GROUP_ADDR = 0xDCB5         # wMapGroup
+    MAP_NUMBER_ADDR = 0xDCB6        # wMapNumber
     
     def __init__(self, pyboy):
         self.pyboy = pyboy
@@ -291,34 +399,164 @@ class PokemonBattleState:
         """Get current turn number"""
         return self.pyboy.memory[self.PLAYER_TURNS_ADDR] or 1
 
+    def set_wild_species(self, species_id):
+        """Pre-seed the next wild encounter species"""
+        self.pyboy.memory[self.TEMP_WILD_SPECIES_ADDR] = species_id
+
+    def get_party_info(self):
+        """Get player's party species and lead level"""
+        count = self.pyboy.memory[self.PARTY_COUNT_ADDR]
+        species = []
+        for i in range(min(count, 6)):
+            s = self.pyboy.memory[self.PARTY_SPECIES_ADDR + i]
+            if s != 0 and s != 0xFF:
+                species.append(s)
+        level = self.pyboy.memory[self.PARTY1_LEVEL_ADDR]
+        return species, level
+
+    # Map group/number to area name (Crystal map constants)
+    MAP_NAMES = {
+        (1,1): "Olivine City", (1,2): "Olivine Gym",
+        (2,1): "Mahogany Town", (2,2): "Mahogany Gym",
+        (3,1): "Route 29", (3,2): "Route 30", (3,3): "Route 31",
+        (3,4): "Route 32", (3,5): "Route 33", (3,6): "Route 34",
+        (3,7): "Route 35", (3,8): "Route 36", (3,9): "Route 37",
+        (3,10): "Route 38", (3,11): "Route 39", (3,12): "Route 40",
+        (3,13): "Route 41",
+        (4,1): "Route 42", (4,2): "Route 43", (4,3): "Route 44",
+        (4,4): "Route 45", (4,5): "Route 46",
+        (10,1): "Cherrygrove City",
+        (11,1): "Violet City", (11,2): "Violet Gym",
+        (12,1): "Azalea Town", (12,2): "Azalea Gym",
+        (13,1): "Goldenrod City", (13,2): "Goldenrod Gym",
+        (14,1): "Ecruteak City", (14,2): "Ecruteak Gym",
+        (24,1): "New Bark Town", (24,2): "Elm's Lab",
+        (24,4): "Player's House 1F", (24,5): "Player's House 2F",
+        (26,1): "Route 26", (26,2): "Route 27", (26,3): "Route 28",
+        (26,4): "Route 29", (26,5): "Route 30",
+    }
+
+    def get_location(self):
+        """Get player's current map location as a readable string"""
+        group = self.pyboy.memory[self.MAP_GROUP_ADDR]
+        num = self.pyboy.memory[self.MAP_NUMBER_ADDR]
+        name = self.MAP_NAMES.get((group, num))
+        if name:
+            return name
+        return f"Area {group}-{num}"
+
+    # --- Tilemap / text box helpers ---
+
+    # Pokemon Crystal character encoding
+    _CHAR_TO_TILE = {}
+    _TILE_TO_CHAR = {}
+
+    @staticmethod
+    def _init_charmap():
+        if PokemonBattleState._CHAR_TO_TILE:
+            return
+        m = PokemonBattleState._CHAR_TO_TILE
+        r = PokemonBattleState._TILE_TO_CHAR
+        # A-Z
+        for i, c in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+            m[c] = 0x80 + i; r[0x80 + i] = c
+        # a-z
+        for i, c in enumerate("abcdefghijklmnopqrstuvwxyz"):
+            m[c] = 0xA0 + i; r[0xA0 + i] = c
+        # 0-9
+        for i, c in enumerate("0123456789"):
+            m[c] = 0xF6 + i; r[0xF6 + i] = c
+        # punctuation
+        for c, t in [(" ", 0x7F), ("?", 0xE6), ("!", 0xE7), (".", 0xE8),
+                      ("&", 0xE9), (",", 0xF4), ("'", 0xE0), ("-", 0xE3),
+                      (":", 0xF5)]:
+            m[c] = t; r[t] = c
+
+    def read_tilemap_row(self, row, col_start=0, col_end=20):
+        """Read a row of tiles from the tilemap"""
+        base = self.TILEMAP_ADDR + row * self.TILEMAP_W
+        return [self.pyboy.memory[base + c] for c in range(col_start, col_end)]
+
+    def tiles_to_text(self, tiles):
+        """Decode tile IDs to readable text"""
+        self._init_charmap()
+        return "".join(self._TILE_TO_CHAR.get(t, "") for t in tiles).strip()
+
+    def text_to_tiles(self, text, width=18):
+        """Encode text to tile IDs, padded to width. Only safe chars (A-Z, a-z, 0-9, space)."""
+        self._init_charmap()
+        tiles = []
+        for c in text[:width]:
+            if c.isalnum() or c == ' ':
+                tiles.append(self._CHAR_TO_TILE.get(c, 0x7F))
+            else:
+                tiles.append(0x7F)  # replace punctuation with space (not in all tilesets)
+        while len(tiles) < width:
+            tiles.append(0x7F)  # pad with spaces
+        return tiles
+
+    def is_textbox_open(self):
+        """Detect if a text box is displayed (check for border tiles in bottom rows)"""
+        # Text box top border is typically at row 12, using specific border tile IDs
+        row12 = self.read_tilemap_row(12, 0, 20)
+        # Pokemon Crystal uses tile 0x79 for horizontal border, 0x78/0x7A for corners
+        border_tiles = {0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69,
+                        0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E}
+        border_count = sum(1 for t in row12 if t in border_tiles)
+        return border_count >= 10
+
+    def read_textbox(self):
+        """Read text from the text box area (2 lines, rows 14 and 16, cols 1-18)"""
+        line1_tiles = self.read_tilemap_row(14, 1, 19)
+        line2_tiles = self.read_tilemap_row(16, 1, 19)
+        line1 = self.tiles_to_text(line1_tiles)
+        line2 = self.tiles_to_text(line2_tiles)
+        return (line1 + " " + line2).strip()
+
+    def write_textbox(self, line1, line2=""):
+        """Write AI text to the text box area (cols 1-18, rows 14 and 16)"""
+        tiles1 = self.text_to_tiles(line1, 18)
+        tiles2 = self.text_to_tiles(line2, 18)
+        base1 = self.TILEMAP_ADDR + 14 * self.TILEMAP_W + 1
+        base2 = self.TILEMAP_ADDR + 16 * self.TILEMAP_W + 1
+        for i, t in enumerate(tiles1):
+            self.pyboy.memory[base1 + i] = t
+        for i, t in enumerate(tiles2):
+            self.pyboy.memory[base2 + i] = t
+
 class AIEmulator:
-    """Main emulator with AI integration via GitHub Models"""
+    """Main emulator with AI integration via Copilot CLI"""
     
     def __init__(self, rom_path, ai_config=None):
         self.rom_path = rom_path
         self.ai_config = ai_config or AIConfig()
         self.pyboy = None
         self.battle_state = None
+        self.copilot = CopilotSession()
         self.last_ai_call = 0
-        self.ai_call_cooldown = 3.0  # seconds between AI calls
+        self.ai_call_cooldown = 3.0
         self._ai_pending = False
         self._latest_decision = None
-        self.llm_client = None
+        # Encounter override system (PyBoy ROM hook)
+        self._next_encounter = None          # {"species": int, "moves": [int,...]} or None
+        self._encounter_pending = False      # True while AI call is in flight
+        self._encounter_applied = False      # Set by hook callback → triggers next pre-fetch
+        self._pending_encounter_moves = None # Moves to write at battle start
+        # Text override system (blocking)
+        self._active_text_lines = None  # (line1, line2) to keep writing to tilemap
+        self._was_textbox_open = False
+        self._textbox_handled = False  # did we already handle this textbox?
+        # Stats
         self.stats = {
             "battles": 0, "ai_calls": 0, "ai_errors": 0,
             "ai_timeouts": 0, "total_api_ms": 0.0,
             "ticks": 0, "start_time": None,
+            "dialogues_rewritten": 0,
         }
         
     def start(self):
-        """Initialize emulator and LLM client"""
-        # Set up LLM
-        token = get_github_token()
-        if not token:
-            log.error("No GitHub token found. Set GH_TOKEN / GITHUB_TOKEN or log in to Copilot CLI.")
-            sys.exit(1)
-        self.llm_client = OpenAI(base_url="https://models.github.ai/inference", api_key=token)
-        log.info("LLM ready: %s via GitHub Models", MODEL)
+        """Initialize emulator and Copilot session"""
+        log.info("AI provider: Copilot CLI (model: %s)", COPILOT_MODEL)
 
         log.info("Loading ROM: %s", self.rom_path)
         self.pyboy = PyBoy(self.rom_path, window="SDL2")
@@ -331,7 +569,29 @@ class AIEmulator:
                 self.pyboy.load_state(f)
             log.info("Loaded save state: %s", state_file)
         
-        log.info("Emulator started — AI enabled: %s", self.ai_config.enabled)
+        # Register ROM hook: intercept TryWildEncounter success return
+        # Bank 10, Addr 0x60F6 = right after encounter species is finalized
+        self.pyboy.hook_register(10, 0x60F6, AIEmulator._encounter_hook, self)
+        log.info("Encounter hook registered (Bank 10, Addr 0x60F6)")
+        
+        # Initialize Copilot session with game context
+        vibe = self.ai_config.vibe
+        init_prompt = (
+            f"You are the AI controller for a Pokemon Crystal game. "
+            f"Your vibe is: \"{vibe}\". "
+            f"I will send you game events (text boxes, battles, encounters). "
+            f"For EVERY request, respond with ONLY valid JSON — no markdown fences, no extra text. "
+            f"When I send textbox text, respond: {{\"line1\": \"<max 18 chars>\", \"line2\": \"<max 18 chars>\"}} "
+            f"When I send battle state, respond: {{\"action\": \"move\", \"move_index\": <0-3>, \"reasoning\": \"...\"}} "
+            f"When I ask for an encounter, respond: {{\"species_id\": <1-251>, \"moves\": [\"Move1\", \"Move2\", \"Move3\", \"Move4\"], \"reasoning\": \"...\"}} "
+            f"Use ONLY A-Z a-z 0-9 and spaces in text lines. NO punctuation. "
+            f"Acknowledge with: {{\"status\": \"ready\"}}"
+        )
+        if self.ai_config.enabled:
+            self.copilot.init_session(init_prompt)
+            self._request_next_encounter()  # pre-fetch first encounter
+        
+        log.info("Emulator started — vibe: \"%s\"", vibe)
     
     def _is_valid_battle_state(self, battle_state):
         your_id = battle_state["your_pokemon"]["pokemon_id"]
@@ -362,8 +622,8 @@ class AIEmulator:
         )
 
     def call_ai(self, battle_state):
-        """Kick off a background LLM call (non-blocking)"""
-        if not self.ai_config.enabled or self._ai_pending or not self.llm_client:
+        """Kick off a background battle AI call (non-blocking)"""
+        if not self.ai_config.enabled or self._ai_pending:
             return
         
         current_time = time.time()
@@ -392,41 +652,28 @@ class AIEmulator:
         def _do_call():
             try:
                 prompt = self._build_prompt(battle_state)
-                log.debug("  LLM prompt: %s", prompt)
-
                 t0 = time.perf_counter()
-                resp = self.llm_client.chat.completions.create(
-                    model=MODEL,
-                    messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": prompt},
-                    ],
-                    max_tokens=150,
-                    temperature=0.4,
-                )
+                raw = self.copilot.call(f"BATTLE: {prompt}")
                 elapsed_ms = (time.perf_counter() - t0) * 1000
                 self.stats["total_api_ms"] += elapsed_ms
 
-                raw = resp.choices[0].message.content.strip()
-                if raw.startswith("```"):
-                    raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-                decision = json.loads(raw)
+                decision = parse_json_response(raw, expected_key="action")
+                if not decision:
+                    self.stats["ai_errors"] += 1
+                    log.warning("  Bad response from AI: %s", raw)
+                    self._latest_decision = {"action": "move", "move_index": 0,
+                                             "reasoning": "fallback: bad response"}
+                else:
+                    mi = decision.get("move_index", 0)
+                    chosen = move_name(moves[mi]) if mi < len(moves) else f"slot {mi}"
+                    reason = decision.get("reasoning", "")
+                    log.info("  ⚡ AI chose: %s (slot %d) in %.0fms", chosen, mi, elapsed_ms)
+                    log.info("  💭 Reasoning: %s", reason)
+                    self._latest_decision = decision
 
-                mi = decision.get("move_index", 0)
-                chosen = move_name(moves[mi]) if mi < len(moves) else f"slot {mi}"
-                reason = decision.get("reasoning", "")
-                log.info("  ⚡ AI chose: %s (slot %d) in %.0fms", chosen, mi, elapsed_ms)
-                log.info("  💭 Reasoning: %s", reason)
-                self._latest_decision = decision
-
-            except json.JSONDecodeError as e:
-                self.stats["ai_errors"] += 1
-                log.warning("  Bad JSON from LLM: %s — raw: %s", e, raw)
-                self._latest_decision = {"action": "move", "move_index": 0,
-                                         "reasoning": "fallback: bad JSON"}
             except Exception as e:
                 self.stats["ai_errors"] += 1
-                log.exception("  LLM call failed: %s", e)
+                log.exception("  AI call failed: %s", e)
             finally:
                 self._ai_pending = False
 
@@ -442,13 +689,171 @@ class AIEmulator:
             self.battle_state.set_enemy_move(move_index)
         else:
             log.debug("Ignoring non-move action: %s", action)
+
+    def _on_battle_start(self):
+        """Called when a battle begins — write custom moves if we have them"""
+        if self._pending_encounter_moves:
+            moves = self._pending_encounter_moves[:4]
+            for i, mid in enumerate(moves):
+                self.pyboy.memory[0xD208 + i] = mid   # wEnemyMonMoves
+                self.pyboy.memory[0xD20E + i] = 35    # wEnemyMonPP (safe default)
+            # Zero out unused slots
+            for i in range(len(moves), 4):
+                self.pyboy.memory[0xD208 + i] = 0
+                self.pyboy.memory[0xD20E + i] = 0
+            log.info("  Custom moves: %s", [move_name(m) for m in moves])
+            self._pending_encounter_moves = None
+
+    # --- Encounter Override (ROM Hook) ---
+
+    @staticmethod
+    def _encounter_hook(context):
+        """ROM hook callback — fires at TryWildEncounter success return.
+        wTempWildMonSpecies is already set; we swap it with our AI pick."""
+        emu = context
+        if emu._next_encounter is not None:
+            enc = emu._next_encounter
+            species = enc["species"]
+            emu.pyboy.memory[0xD22E] = species  # wTempWildMonSpecies
+            emu._pending_encounter_moves = enc.get("moves")
+            log.info("🎯 Encounter override: %s (ID: %d)", pokemon_name(species), species)
+            emu._next_encounter = None
+            emu._encounter_applied = True
+
+    def _request_next_encounter(self):
+        """Pre-fetch the next encounter species + moves from AI (background thread)."""
+        if self._encounter_pending or self._next_encounter is not None:
+            return
+        if not self.ai_config.enabled:
+            return
+        self._encounter_pending = True
+
+        def _do_fetch():
+            try:
+                party_species, lead_level = self.battle_state.get_party_info()
+                location = self.battle_state.get_location()
+                party_str = ", ".join(pokemon_name(s) for s in party_species)
+                prompt = (
+                    f"ENCOUNTER: Player at {location} with [{party_str}] "
+                    f"(lead level: {lead_level}). "
+                    f"Pick a wild Pokemon and 4 moves it should know. "
+                    f"JSON: {{\"species_id\": <1-251>, \"moves\": "
+                    f"[\"MoveName1\", \"MoveName2\", \"MoveName3\", \"MoveName4\"], "
+                    f"\"reasoning\": \"...\"}}"
+                )
+                raw = self.copilot.call(prompt)
+                result = parse_json_response(raw, expected_key="species_id")
+                if result and "species_id" in result:
+                    sid = int(result["species_id"])
+                    if 1 <= sid <= 251:
+                        # Convert move names to IDs
+                        move_ids = []
+                        for mname in result.get("moves", [])[:4]:
+                            mid = MOVE_NAME_TO_ID.get(str(mname).lower())
+                            if mid:
+                                move_ids.append(mid)
+                            else:
+                                move_ids.append(33)  # Tackle fallback
+                        if not move_ids:
+                            move_ids = [33]  # at least Tackle
+                        self._next_encounter = {"species": sid, "moves": move_ids}
+                        log.info("🎲 Next encounter: %s — moves: %s",
+                                 pokemon_name(sid),
+                                 [move_name(m) for m in move_ids])
+                    else:
+                        log.warning("AI returned invalid species_id: %d", sid)
+                else:
+                    log.warning("Encounter AI bad response: %s", raw)
+            except Exception as e:
+                log.warning("Encounter AI error: %s", e)
+            finally:
+                self._encounter_pending = False
+
+        threading.Thread(target=_do_fetch, daemon=True).start()
+
+    # --- Blocking Text Override ---
+
+    def _handle_textbox(self):
+        """Detect textbox opening, BLOCK to get AI text, then keep overwriting.
+        
+        Flow:
+        1. Textbox border appears → we detect it immediately
+        2. BLOCK the game loop, call AI synchronously with context
+        3. Store AI text as active override
+        4. Every tick while textbox is open, overwrite tilemap with our text
+        """
+        is_open = self.battle_state.is_textbox_open()
+        
+        # Textbox just closed — clear override
+        if not is_open:
+            if self._was_textbox_open:
+                self._active_text_lines = None
+                self._textbox_handled = False
+            self._was_textbox_open = False
+            return
+        
+        # Keep overwriting with our text every tick while textbox is open
+        if self._active_text_lines:
+            self.battle_state.write_textbox(*self._active_text_lines)
+        
+        # Textbox just opened (or we haven't handled it yet) — BLOCK and call AI
+        if is_open and not self._textbox_handled:
+            self._was_textbox_open = True
+            self._textbox_handled = True
+            
+            if not self.ai_config.enabled:
+                return
+            
+            # Let the game render a few frames so we can read what text it's writing
+            # (tick 30 times quickly to let typewriter fill in)
+            for _ in range(90):
+                self.pyboy.tick()
+                self.stats["ticks"] += 1
+            
+            # Read whatever text is there now
+            original_text = self.battle_state.read_textbox()
+            if not original_text or len(original_text) < 3:
+                return
+            
+            # Build context
+            location = self.battle_state.get_location()
+            in_battle = self.battle_state.is_in_battle()
+            battle_ctx = ""
+            if in_battle:
+                state = self.battle_state.get_battle_state()
+                if state:
+                    your = state["your_pokemon"]
+                    opp = state["opponent"]
+                    battle_ctx = (f" Battle: {pokemon_name(your['pokemon_id'])} "
+                                  f"vs {pokemon_name(opp['pokemon_id'])}.")
+            
+            log.info("💬 Text: \"%s\" [%s%s]", original_text, location, battle_ctx)
+            
+            # BLOCKING call to AI
+            t0 = time.perf_counter()
+            prompt = f"TEXTBOX at {location}.{battle_ctx} Original: \"{original_text}\""
+            raw = self.copilot.call(prompt)
+            elapsed_ms = (time.perf_counter() - t0) * 1000
+            
+            result = parse_json_response(raw, expected_key="line1")
+            if result and ("line1" in result or "line2" in result):
+                line1 = result.get("line1", "")[:18]
+                line2 = result.get("line2", "")[:18]
+                log.info("  ✏️  Rewritten (%.0fms): \"%s\" / \"%s\"", elapsed_ms, line1, line2)
+                self._active_text_lines = (line1, line2)
+                self.battle_state.write_textbox(line1, line2)
+                self.stats["dialogues_rewritten"] += 1
+            else:
+                log.warning("  Dialogue AI bad response: %s", raw)
     
     def _log_stats(self):
         s = self.stats
         uptime = time.time() - s["start_time"] if s["start_time"] else 0
         avg = (s["total_api_ms"] / s["ai_calls"]) if s["ai_calls"] else 0
-        log.info("📊 Stats: %ds uptime | %d battles | %d AI calls (%.0fms avg) | %d errors",
-                 uptime, s["battles"], s["ai_calls"], avg, s["ai_errors"])
+        log.info("📊 Stats: %ds | %d battles | %d AI calls (%.0fms avg) | "
+                 "%d dialogues | %d errors",
+                 uptime, s["battles"], s["ai_calls"], avg,
+                 s["dialogues_rewritten"], s["ai_errors"])
     
     def run(self):
         """Main emulator loop"""
@@ -471,6 +876,7 @@ class AIEmulator:
                 
                 if in_battle and not was_in_battle:
                     self.stats["battles"] += 1
+                    self._on_battle_start()
                     state = self.battle_state.get_battle_state()
                     if state:
                         your = state["your_pokemon"]
@@ -491,11 +897,20 @@ class AIEmulator:
                     log.info("🏁 BATTLE #%d ENDED", self.stats["battles"])
                     log.info("═══════════════════════════════════════")
                     was_in_battle = False
+                    self._request_next_encounter()  # pre-fetch for next encounter
                 
                 if in_battle:
                     state = self.battle_state.get_battle_state()
                     if state:
                         self.call_ai(state)
+                else:
+                    # Overworld: re-fetch only after an encounter was consumed
+                    if self._encounter_applied:
+                        self._encounter_applied = False
+                        self._request_next_encounter()
+                
+                # Handle text boxes — blocking call + continuous overwrite
+                self._handle_textbox()
                 
                 if self._latest_decision:
                     self.apply_ai_decision(self._latest_decision)
@@ -528,10 +943,12 @@ def main():
                         help="Path to Pokemon Crystal ROM")
     parser.add_argument("--no-ai", action="store_true",
                         help="Disable AI calls (run emulator only)")
+    parser.add_argument("--vibe", default="exciting but not fatal",
+                        help="AI vibe/personality (default: 'exciting but not fatal')")
     
     args = parser.parse_args()
     
-    config = AIConfig()
+    config = AIConfig(vibe=args.vibe)
     config.enabled = not args.no_ai
     
     emulator = AIEmulator(args.rom, config)
