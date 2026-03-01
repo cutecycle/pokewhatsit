@@ -1,17 +1,10 @@
-2026-03-01 13:55:58 [INFO] Session ID: dfb342c5 (calls: 0/80)
-2026-03-01 13:55:58 [INFO] AI provider: Copilot CLI (model: claude-sonnet-4.6)
-2026-03-01 13:55:58 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
-2026-03-01 13:55:59 [INFO] Loaded save state: .\cc_starter.state
-2026-03-01 13:55:59 [INFO] Encounter hook registered (Bank 10, Addr 0x60F6)
-2026-03-01 13:55:59 [INFO] Resuming existing session: dfb342c5
-2026-03-01 13:55:59 [INFO] Emulator started — vibe: "exciting but not fatal"
-2026-03-01 13:55:59 [INFO] 🎮 Emulator running — walk into tall grass!
-2026-03-01 13:56:01 [INFO] 💬 Text: "is adorable! I wish I had one!" [Player's House 1F]
-2026-03-01 13:56:06 [INFO] 🎲 Next encounter: Eevee — moves: ['Tackle', 'Tail Whip', 'Sand Attack', 'Quick Attack']
-2026-03-01 13:56:12 [INFO]   ✏️  Rewritten (11559ms): "so cute I wish I" / "had one like that"
-2026-03-01 13:56:21 [INFO] 📊 Stats: 21s | 0 battles | 0 AI calls (0ms avg) | 1 dialogues | 0 errors
-2026-03-01 13:56:31 [INFO] 📊 Stats: 31s | 0 battles | 0 AI calls (0ms avg) | 1 dialogues | 0 errors
-2026-03-01 13:56:35 [INFO] 🎯 Encounter override: Eevee (ID: 133)
-2026-03-01 13:56:41 [INFO] 📊 Stats: 41s | 0 battles | 0 AI calls (0ms avg) | 1 dialogues | 0 errors
-2026-03-01 13:56:42 [INFO] 🎲 Next encounter: Growlithe — moves: ['Tackle', 'Growl', 'Ember', 'Leer']
-2026-03-01 13:56:51 [INFO] 📊 Stats: 51s | 0 battles | 0 AI calls (0ms avg) | 1 dialogues | 0 errors
+2026-03-01 14:16:18 [INFO] Session ID: ae9857a2 (calls: 0/80)
+2026-03-01 14:16:18 [INFO] AI provider: Copilot CLI (model: claude-sonnet-4.6)
+2026-03-01 14:16:18 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
+2026-03-01 14:16:18 [INFO] Loaded save state: .\cc_starter.state
+2026-03-01 14:16:18 [INFO] Encounter hook registered (Bank 10, Addr 0x60F6)
+2026-03-01 14:16:18 [INFO] Resuming existing session: ae9857a2
+2026-03-01 14:16:18 [INFO] Emulator started — vibe: "kaizo with hilarious text"
+2026-03-01 14:16:18 [INFO] 🎮 Emulator running — walk into tall grass!
+2026-03-01 14:16:18 [INFO] 🗺️  Entered: Player's House 1F
+2026-03-01 14:16:28 [INFO] 📊 Stats: 9s | 0 battles | 0 AI calls (0ms avg) | 0 dialogues | 0 errors

@@ -219,7 +219,10 @@ class CopilotSession:
                     timeout=timeout, encoding="utf-8"
                 )
                 self._call_count += 1
-                return result.stdout.strip() if result.stdout else None
+                out = result.stdout.strip() if result.stdout else None
+                log.debug("Copilot raw [%d]: %s", self._call_count,
+                          out[:500] if out else "(empty)")
+                return out
             except subprocess.TimeoutExpired:
                 log.warning("Copilot CLI timed out")
                 return None
@@ -249,7 +252,26 @@ def parse_json_response(raw, expected_key=None):
         if "```" in text:
             text = text.rsplit("```", 1)[0]
         text = text.strip()
-    # Find all JSON objects in the text
+    # Try full JSON parse first (handles nested objects like dialogues batch)
+    try:
+        obj = json.loads(text)
+        if isinstance(obj, dict):
+            if expected_key is None or expected_key in obj:
+                return obj
+    except json.JSONDecodeError:
+        pass
+    # Try to find a JSON block starting from first { to last }
+    first = text.find('{')
+    last = text.rfind('}')
+    if first != -1 and last > first:
+        try:
+            obj = json.loads(text[first:last + 1])
+            if isinstance(obj, dict):
+                if expected_key is None or expected_key in obj:
+                    return obj
+        except json.JSONDecodeError:
+            pass
+    # Fall back to flat JSON objects (no nesting)
     objects = []
     for m in re.finditer(r'\{[^{}]*\}', text):
         try:
@@ -259,7 +281,6 @@ def parse_json_response(raw, expected_key=None):
             pass
     if not objects:
         return None
-    # If we have an expected key, find the object with that key
     if expected_key:
         for obj in objects:
             if expected_key in obj:
@@ -537,6 +558,7 @@ class AIEmulator:
         self.ai_call_cooldown = 3.0
         self._ai_pending = False
         self._latest_decision = None
+        self._current_battle_move = None  # Continuously written to wCurEnemyMoveNum
         # Encounter override system (PyBoy ROM hook)
         self._next_encounter = None          # {"species": int, "moves": [int,...]} or None
         self._encounter_pending = False      # True while AI call is in flight
@@ -546,6 +568,11 @@ class AIEmulator:
         self._active_text_lines = None  # (line1, line2) to keep writing to tilemap
         self._was_textbox_open = False
         self._textbox_handled = False  # did we already handle this textbox?
+        # Async dialogue pre-cache (per-area batch)
+        self._dialogue_cache = []            # [(line1, line2), ...] pre-generated
+        self._dialogue_cache_pending = False # True while batch AI call in flight
+        self._last_map_key = None            # (group, number) for map change detection
+        self._last_map_change_time = 0       # cooldown to avoid spam during transitions
         # Stats
         self.stats = {
             "battles": 0, "ai_calls": 0, "ai_errors": 0,
@@ -581,15 +608,19 @@ class AIEmulator:
             f"Your vibe is: \"{vibe}\". "
             f"I will send you game events (text boxes, battles, encounters). "
             f"For EVERY request, respond with ONLY valid JSON — no markdown fences, no extra text. "
+            f"TEXT DISPLAY RULES that apply to ALL dialogue line1 and line2 values: "
+            f"Each line is MAX 18 characters. Use ONLY the letters A to Z and a to z and digits 0 to 9 and the space character. "
+            f"Absolutely NO punctuation NO quotes NO apostrophes NO hyphens NO periods NO commas NO special characters. "
+            f"Fit complete words within the 18 char limit. "
             f"When I send textbox text, respond: {{\"line1\": \"<max 18 chars>\", \"line2\": \"<max 18 chars>\"}} "
             f"When I send battle state, respond: {{\"action\": \"move\", \"move_index\": <0-3>, \"reasoning\": \"...\"}} "
             f"When I ask for an encounter, respond: {{\"species_id\": <1-251>, \"moves\": [\"Move1\", \"Move2\", \"Move3\", \"Move4\"], \"reasoning\": \"...\"}} "
-            f"Use ONLY A-Z a-z 0-9 and spaces in text lines. NO punctuation. "
+            f"When I ask for a DIALOGUE BATCH, respond: {{\"dialogues\": [{{\"line1\": \"...\", \"line2\": \"...\"}}, ...]}} "
             f"Acknowledge with: {{\"status\": \"ready\"}}"
         )
         if self.ai_config.enabled:
             self.copilot.init_session(init_prompt)
-            self._request_next_encounter()  # pre-fetch first encounter
+            # Encounter + dialogue pre-fetch triggered by map-change detector in run()
         
         log.info("Emulator started — vibe: \"%s\"", vibe)
     
@@ -771,16 +802,54 @@ class AIEmulator:
 
         threading.Thread(target=_do_fetch, daemon=True).start()
 
-    # --- Blocking Text Override ---
+    # --- Async Dialogue Pre-Cache ---
+
+    def _prefetch_area_dialogue(self):
+        """Pre-generate a batch of NPC dialogues for the current area (async)."""
+        if self._dialogue_cache_pending or not self.ai_config.enabled:
+            return
+        self._dialogue_cache_pending = True
+        location = self.battle_state.get_location()
+
+        def _do_fetch():
+            try:
+                prompt = (
+                    f"DIALOGUE BATCH for {location}. "
+                    f"Generate 8 funny NPC dialogues for this area. "
+                    f"STRICT: each line1 and line2 MUST be 18 chars or fewer. "
+                    f"ONLY letters A Z a z digits 0 9 and spaces. NO punctuation at all. "
+                    f"JSON: {{\"dialogues\": [{{\"line1\": \"...\", \"line2\": \"...\"}}, ...]}}"
+                )
+                raw = self.copilot.call(prompt, timeout=45)
+                result = parse_json_response(raw, expected_key="dialogues")
+                if result and "dialogues" in result:
+                    import re
+                    batch = []
+                    for d in result["dialogues"]:
+                        l1 = re.sub(r'[^A-Za-z0-9 ]', '',
+                                    str(d.get("line1", "")))[:18]
+                        l2 = re.sub(r'[^A-Za-z0-9 ]', '',
+                                    str(d.get("line2", "")))[:18]
+                        if l1 or l2:
+                            batch.append((l1, l2))
+                    self._dialogue_cache = batch
+                    log.info("📝 Cached %d dialogues for %s", len(batch), location)
+                else:
+                    log.warning("Dialogue batch bad response: %s",
+                                raw[:120] if raw else None)
+            except Exception as e:
+                log.warning("Dialogue batch error: %s", e)
+            finally:
+                self._dialogue_cache_pending = False
+
+        threading.Thread(target=_do_fetch, daemon=True).start()
+
+    # --- Text Override ---
 
     def _handle_textbox(self):
-        """Detect textbox opening, BLOCK to get AI text, then keep overwriting.
+        """Overworld: use pre-cached dialogue (instant). Battle: blocking AI rewrite.
         
-        Flow:
-        1. Textbox border appears → we detect it immediately
-        2. BLOCK the game loop, call AI synchronously with context
-        3. Store AI text as active override
-        4. Every tick while textbox is open, overwrite tilemap with our text
+        Every tick while textbox is open, keep overwriting tilemap with our text.
         """
         is_open = self.battle_state.is_textbox_open()
         
@@ -796,7 +865,7 @@ class AIEmulator:
         if self._active_text_lines:
             self.battle_state.write_textbox(*self._active_text_lines)
         
-        # Textbox just opened (or we haven't handled it yet) — BLOCK and call AI
+        # Textbox just opened — decide how to handle
         if is_open and not self._textbox_handled:
             self._was_textbox_open = True
             self._textbox_handled = True
@@ -804,47 +873,66 @@ class AIEmulator:
             if not self.ai_config.enabled:
                 return
             
-            # Let the game render a few frames so we can read what text it's writing
-            # (tick 30 times quickly to let typewriter fill in)
+            in_battle = self.battle_state._raw_battle_mode() != 0
+            
+            # --- OVERWORLD: use cached dialogue (instant, never blocks) ---
+            if not in_battle:
+                if self._dialogue_cache:
+                    line1, line2 = self._dialogue_cache.pop(0)
+                    log.info("💬 Cached: \"%s\" / \"%s\" (%d left)",
+                             line1, line2, len(self._dialogue_cache))
+                    self._active_text_lines = (line1, line2)
+                    self.battle_state.write_textbox(line1, line2)
+                    self.stats["dialogues_rewritten"] += 1
+                    if len(self._dialogue_cache) < 2:
+                        self._prefetch_area_dialogue()
+                return
+            
+            # --- BATTLE: blocking AI call with context ---
             for _ in range(90):
                 self.pyboy.tick()
                 self.stats["ticks"] += 1
             
-            # Read whatever text is there now
             original_text = self.battle_state.read_textbox()
             if not original_text or len(original_text) < 3:
                 return
             
-            # Build context
             location = self.battle_state.get_location()
-            in_battle = self.battle_state.is_in_battle()
+            state = self.battle_state.get_battle_state()
             battle_ctx = ""
-            if in_battle:
-                state = self.battle_state.get_battle_state()
-                if state:
-                    your = state["your_pokemon"]
-                    opp = state["opponent"]
-                    battle_ctx = (f" Battle: {pokemon_name(your['pokemon_id'])} "
-                                  f"vs {pokemon_name(opp['pokemon_id'])}.")
+            if state:
+                your = state["your_pokemon"]
+                opp = state["opponent"]
+                battle_ctx = (f" {pokemon_name(your['pokemon_id'])} "
+                              f"vs {pokemon_name(opp['pokemon_id'])}.")
             
-            log.info("💬 Text: \"%s\" [%s%s]", original_text, location, battle_ctx)
+            log.info("⚔️ Battle text: \"%s\" [%s%s]",
+                     original_text, location, battle_ctx)
             
-            # BLOCKING call to AI
             t0 = time.perf_counter()
-            prompt = f"TEXTBOX at {location}.{battle_ctx} Original: \"{original_text}\""
+            prompt = (
+                f"BATTLE TEXTBOX.{battle_ctx} Original: \"{original_text}\" "
+                f"Rewrite as funny battle commentary. "
+                f"STRICT: line1 and line2 each MAX 18 chars. "
+                f"ONLY letters digits and spaces. NO punctuation."
+            )
             raw = self.copilot.call(prompt)
             elapsed_ms = (time.perf_counter() - t0) * 1000
             
             result = parse_json_response(raw, expected_key="line1")
             if result and ("line1" in result or "line2" in result):
-                line1 = result.get("line1", "")[:18]
-                line2 = result.get("line2", "")[:18]
-                log.info("  ✏️  Rewritten (%.0fms): \"%s\" / \"%s\"", elapsed_ms, line1, line2)
+                import re
+                line1 = re.sub(r'[^A-Za-z0-9 ]', '',
+                               str(result.get("line1", "")))[:18]
+                line2 = re.sub(r'[^A-Za-z0-9 ]', '',
+                               str(result.get("line2", "")))[:18]
+                log.info("  ✏️  Rewritten (%.0fms): \"%s\" / \"%s\"",
+                         elapsed_ms, line1, line2)
                 self._active_text_lines = (line1, line2)
                 self.battle_state.write_textbox(line1, line2)
                 self.stats["dialogues_rewritten"] += 1
             else:
-                log.warning("  Dialogue AI bad response: %s", raw)
+                log.warning("  Battle text AI bad response: %s", raw)
     
     def _log_stats(self):
         s = self.stats
@@ -876,6 +964,7 @@ class AIEmulator:
                 
                 if in_battle and not was_in_battle:
                     self.stats["battles"] += 1
+                    self._current_battle_move = None  # reset for new battle
                     self._on_battle_start()
                     state = self.battle_state.get_battle_state()
                     if state:
@@ -904,17 +993,36 @@ class AIEmulator:
                     if state:
                         self.call_ai(state)
                 else:
-                    # Overworld: re-fetch only after an encounter was consumed
+                    # Overworld: re-fetch encounter after one was consumed
                     if self._encounter_applied:
                         self._encounter_applied = False
+                        self._request_next_encounter()
+                    # Detect map change → pre-fetch area dialogue
+                    current_map = (self.pyboy.memory[0xDCB5],
+                                   self.pyboy.memory[0xDCB6])
+                    if (current_map != self._last_map_key
+                            and current_map != (0, 0)
+                            and time.time() - self._last_map_change_time > 5):
+                        self._last_map_key = current_map
+                        self._last_map_change_time = time.time()
+                        location = self.battle_state.get_location()
+                        log.info("🗺️  Entered: %s", location)
+                        self._dialogue_cache.clear()
+                        self._prefetch_area_dialogue()
                         self._request_next_encounter()
                 
                 # Handle text boxes — blocking call + continuous overwrite
                 self._handle_textbox()
                 
+                # Latch AI decision; continuously write move index every tick
                 if self._latest_decision:
-                    self.apply_ai_decision(self._latest_decision)
+                    mi = self._latest_decision.get("move_index", 0)
+                    self._current_battle_move = mi
                     self._latest_decision = None
+                if in_battle and self._current_battle_move is not None:
+                    self.battle_state.set_enemy_move(self._current_battle_move)
+                if not in_battle:
+                    self._current_battle_move = None
                 
                 if self.stats["ticks"] % stats_interval == 0:
                     self._log_stats()
