@@ -1,147 +1,678 @@
-2026-02-28 19:13:42 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
-2026-02-28 19:13:43 [INFO] Emulator started successfully!
-2026-02-28 19:13:43 [INFO] AI API endpoint: http://localhost:5000/api/battle-decision
-2026-02-28 19:13:43 [INFO] AI enabled: True
-2026-02-28 19:13:43 [INFO] Emulator running. Press Ctrl+C to stop.
-2026-02-28 19:13:43 [INFO] AI will be called during enemy turns in battle.
-2026-02-28 19:13:48 [INFO] === SESSION STATS === uptime=5s ticks=300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:13:53 [INFO] === SESSION STATS === uptime=10s ticks=600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:13:56 [INFO] === SESSION STATS === uptime=13s ticks=900 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:13:56 [INFO] === SESSION STATS === uptime=14s ticks=1200 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:13:59 [INFO] === SESSION STATS === uptime=16s ticks=1500 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:04 [INFO] === SESSION STATS === uptime=21s ticks=1800 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:10 [INFO] === SESSION STATS === uptime=27s ticks=2100 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:15 [INFO] === SESSION STATS === uptime=32s ticks=2400 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:20 [INFO] === SESSION STATS === uptime=37s ticks=2700 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:25 [INFO] === SESSION STATS === uptime=42s ticks=3000 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:30 [INFO] === SESSION STATS === uptime=47s ticks=3300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:35 [INFO] === SESSION STATS === uptime=52s ticks=3600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:40 [INFO] === SESSION STATS === uptime=57s ticks=3900 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:45 [INFO] === SESSION STATS === uptime=62s ticks=4200 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:50 [INFO] === SESSION STATS === uptime=67s ticks=4500 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:14:55 [INFO] === SESSION STATS === uptime=73s ticks=4800 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:00 [INFO] === SESSION STATS === uptime=78s ticks=5100 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:05 [INFO] === SESSION STATS === uptime=83s ticks=5400 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:10 [INFO] === SESSION STATS === uptime=88s ticks=5700 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:15 [INFO] === SESSION STATS === uptime=93s ticks=6000 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:20 [INFO] === SESSION STATS === uptime=98s ticks=6300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:25 [INFO] === SESSION STATS === uptime=103s ticks=6600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:30 [INFO] === SESSION STATS === uptime=108s ticks=6900 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:35 [INFO] === SESSION STATS === uptime=113s ticks=7200 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:40 [INFO] === SESSION STATS === uptime=118s ticks=7500 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:45 [INFO] === SESSION STATS === uptime=123s ticks=7800 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
-2026-02-28 19:15:46 [INFO] *** BATTLE #1 STARTED ***
-2026-02-28 19:15:46 [INFO] [AI #1] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
-2026-02-28 19:15:46 [DEBUG] [AI #1] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:15:50 [INFO] [AI #1] Decision in 3765ms: action=switch move=None reason=Current Pokemon fainted, must switch to another Pokemon.
-2026-02-28 19:15:50 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:15:50 [INFO] [AI #2] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
-2026-02-28 19:15:50 [DEBUG] [AI #2] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:15:54 [INFO] [AI #2] Decision in 3610ms: action=switch move=None reason=Current Pokemon is fainted, must switch to another Pokemon.
-2026-02-28 19:15:54 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:15:54 [INFO] [AI #3] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
-2026-02-28 19:15:54 [DEBUG] [AI #3] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:15:57 [INFO] [AI #3] Decision in 3356ms: action=switch move=None reason=Current Pokémon fainted, must switch to another Pokémon.
-2026-02-28 19:15:57 [DEBUG] Switching to Pokemon 2
-2026-02-28 19:15:57 [INFO] [AI #4] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
-2026-02-28 19:15:57 [DEBUG] [AI #4] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:16:00 [INFO] [AI #4] Decision in 3071ms: action=switch move=None reason=Current Pokemon fainted, must switch to another Pokemon.
-2026-02-28 19:16:00 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:16:00 [INFO] *** BATTLE #1 ENDED ***
-2026-02-28 19:16:04 [INFO] === SESSION STATS === uptime=141s ticks=8100 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:09 [INFO] === SESSION STATS === uptime=146s ticks=8400 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:14 [INFO] === SESSION STATS === uptime=151s ticks=8700 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:19 [INFO] === SESSION STATS === uptime=156s ticks=9000 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:24 [INFO] === SESSION STATS === uptime=161s ticks=9300 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:29 [INFO] === SESSION STATS === uptime=166s ticks=9600 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:34 [INFO] === SESSION STATS === uptime=171s ticks=9900 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
-2026-02-28 19:16:38 [INFO] *** BATTLE #2 STARTED ***
-2026-02-28 19:16:38 [INFO] [AI #5] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
-2026-02-28 19:16:38 [DEBUG] [AI #5] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:16:42 [INFO] [AI #5] Decision in 3629ms: action=move move=0 reason=Battle is over, but defaulting to first move as no other action is possible.
-2026-02-28 19:16:42 [DEBUG] Executing move 1
-2026-02-28 19:16:42 [INFO] [AI #6] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
-2026-02-28 19:16:42 [DEBUG] [AI #6] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:16:45 [INFO] [AI #6] Decision in 3095ms: action=switch move=None reason=Current Pokémon fainted, must switch to a new Pokémon.
-2026-02-28 19:16:45 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:16:45 [INFO] [AI #7] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
-2026-02-28 19:16:45 [DEBUG] [AI #7] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:16:48 [INFO] [AI #7] Decision in 3106ms: action=switch move=None reason=Current Pokémon fainted, must switch to another Pokémon.
-2026-02-28 19:16:48 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:16:48 [INFO] [AI #8] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
-2026-02-28 19:16:48 [DEBUG] [AI #8] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:16:51 [INFO] [AI #8] Decision in 3090ms: action=switch move=None reason=Current Pokémon fainted, need to switch to a new Pokémon.
-2026-02-28 19:16:51 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:16:51 [INFO] *** BATTLE #2 ENDED ***
-2026-02-28 19:16:52 [INFO] === SESSION STATS === uptime=189s ticks=10200 battles=2 ai_calls=8 errors=0 timeouts=0 avg_api=3340ms
-2026-02-28 19:16:57 [INFO] === SESSION STATS === uptime=194s ticks=10500 battles=2 ai_calls=8 errors=0 timeouts=0 avg_api=3340ms
-2026-02-28 19:17:01 [INFO] *** BATTLE #3 STARTED ***
-2026-02-28 19:17:01 [INFO] [AI #9] Requesting decision — Player HP:127 Enemy HP:17 Turn:192
-2026-02-28 19:17:01 [DEBUG] [AI #9] Full state: {"player": {"hp": 127, "pokemon_id": 255}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 192}
-2026-02-28 19:17:04 [INFO] [AI #9] Decision in 3416ms: action=move move=0 reason=Enemy Pokemon is low on HP, use first move to finish the battle quickly.
-2026-02-28 19:17:04 [DEBUG] Executing move 1
-2026-02-28 19:17:04 [INFO] [AI #10] Requesting decision — Player HP:127 Enemy HP:17 Turn:68
-2026-02-28 19:17:04 [DEBUG] [AI #10] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 68}
-2026-02-28 19:17:08 [INFO] [AI #10] Decision in 3530ms: action=move move=0 reason=Enemy HP is very low, use a move to finish the battle quickly.
-2026-02-28 19:17:08 [DEBUG] Executing move 1
-2026-02-28 19:17:08 [INFO] [AI #11] Requesting decision — Player HP:96 Enemy HP:96 Turn:96
-2026-02-28 19:17:08 [DEBUG] [AI #11] Full state: {"player": {"hp": 96, "pokemon_id": 96}, "enemy": {"hp": 96, "pokemon_id": 255}, "turn": 96}
-2026-02-28 19:17:11 [INFO] [AI #11] Decision in 3093ms: action=move move=0 reason=No additional info on moves or types, so use first move by default.
-2026-02-28 19:17:11 [DEBUG] Executing move 1
-2026-02-28 19:17:11 [INFO] [AI #12] Requesting decision — Player HP:96 Enemy HP:96 Turn:96
-2026-02-28 19:17:11 [DEBUG] [AI #12] Full state: {"player": {"hp": 96, "pokemon_id": 96}, "enemy": {"hp": 96, "pokemon_id": 255}, "turn": 96}
-2026-02-28 19:17:14 [INFO] [AI #12] Decision in 3071ms: action=move move=0 reason=Use the first move as no other information is given; maintain offensive pressure.
-2026-02-28 19:17:14 [DEBUG] Executing move 1
-2026-02-28 19:17:14 [INFO] [AI #13] Requesting decision — Player HP:127 Enemy HP:17 Turn:96
-2026-02-28 19:17:14 [DEBUG] [AI #13] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 96}
-2026-02-28 19:17:17 [INFO] [AI #13] Decision in 3014ms: action=move move=0 reason=Enemy is very low on HP, use a move to finish the battle quickly.
-2026-02-28 19:17:17 [DEBUG] Executing move 1
-2026-02-28 19:17:17 [INFO] [AI #14] Requesting decision — Player HP:127 Enemy HP:17 Turn:122
-2026-02-28 19:17:17 [DEBUG] [AI #14] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:20 [INFO] [AI #14] Decision in 3150ms: action=move move=0 reason=Enemy has very low HP, use first move to finish the battle quickly.
-2026-02-28 19:17:20 [DEBUG] Executing move 1
-2026-02-28 19:17:20 [INFO] [AI #15] Requesting decision — Player HP:127 Enemy HP:17 Turn:122
-2026-02-28 19:17:20 [DEBUG] [AI #15] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:23 [INFO] [AI #15] Decision in 3089ms: action=move move=0 reason=Enemy is very low on HP; use first move to finish it off quickly.
-2026-02-28 19:17:23 [DEBUG] Executing move 1
-2026-02-28 19:17:23 [INFO] [AI #16] Requesting decision — Player HP:127 Enemy HP:17 Turn:122
-2026-02-28 19:17:23 [DEBUG] [AI #16] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:26 [INFO] [AI #16] Decision in 3099ms: action=move move=0 reason=Enemy Pokemon has very low HP (17), using move 0 to finish it off quickly.
-2026-02-28 19:17:26 [DEBUG] Executing move 1
-2026-02-28 19:17:26 [INFO] [AI #17] Requesting decision — Player HP:192 Enemy HP:254 Turn:122
-2026-02-28 19:17:26 [DEBUG] [AI #17] Full state: {"player": {"hp": 192, "pokemon_id": 1}, "enemy": {"hp": 254, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:29 [INFO] [AI #17] Decision in 3164ms: action=move move=0 reason=No additional information on moves or opponent type, using first move by default.
-2026-02-28 19:17:29 [DEBUG] Executing move 1
-2026-02-28 19:17:29 [INFO] [AI #18] Requesting decision — Player HP:0 Enemy HP:0 Turn:122
-2026-02-28 19:17:29 [DEBUG] [AI #18] Full state: {"player": {"hp": 0, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:33 [INFO] [AI #18] Decision in 3247ms: action=switch move=None reason=Current Pokémon fainted, must switch to another Pokémon.
-2026-02-28 19:17:33 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:17:33 [INFO] [AI #19] Requesting decision — Player HP:0 Enemy HP:0 Turn:122
-2026-02-28 19:17:33 [DEBUG] [AI #19] Full state: {"player": {"hp": 0, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:36 [INFO] [AI #19] Decision in 3205ms: action=switch move=None reason=Player's current Pokemon is fainted; must switch to a new Pokemon.
-2026-02-28 19:17:36 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:17:36 [INFO] [AI #20] Requesting decision — Player HP:0 Enemy HP:0 Turn:122
-2026-02-28 19:17:36 [DEBUG] [AI #20] Full state: {"player": {"hp": 0, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:39 [INFO] [AI #20] Decision in 3224ms: action=switch move=None reason=Current Pokemon fainted, must switch to a new Pokemon.
-2026-02-28 19:17:39 [DEBUG] Switching to Pokemon 1
-2026-02-28 19:17:39 [INFO] *** BATTLE #3 ENDED ***
-2026-02-28 19:17:39 [INFO] *** BATTLE #4 STARTED ***
-2026-02-28 19:17:39 [INFO] [AI #21] Requesting decision — Player HP:132 Enemy HP:66 Turn:122
-2026-02-28 19:17:39 [DEBUG] [AI #21] Full state: {"player": {"hp": 132, "pokemon_id": 1}, "enemy": {"hp": 66, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:42 [INFO] [AI #21] Decision in 3100ms: action=move move=0 reason=Enemy HP is low, use first move to try to finish the opponent quickly.
-2026-02-28 19:17:42 [DEBUG] Executing move 1
-2026-02-28 19:17:42 [INFO] [AI #22] Requesting decision — Player HP:130 Enemy HP:132 Turn:122
-2026-02-28 19:17:42 [DEBUG] [AI #22] Full state: {"player": {"hp": 130, "pokemon_id": 1}, "enemy": {"hp": 132, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:46 [INFO] [AI #22] Decision in 3891ms: action=move move=0 reason=No additional information on moves or types, default to first move to maintain pressure.
-2026-02-28 19:17:46 [DEBUG] Executing move 1
-2026-02-28 19:17:46 [INFO] [AI #23] Requesting decision — Player HP:64 Enemy HP:0 Turn:122
-2026-02-28 19:17:46 [DEBUG] [AI #23] Full state: {"player": {"hp": 64, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:17:53 [WARNING] [AI #23] API timeout (>5s)
-2026-02-28 19:17:53 [INFO] [AI #24] Requesting decision — Player HP:78 Enemy HP:0 Turn:122
-2026-02-28 19:17:53 [DEBUG] [AI #24] Full state: {"player": {"hp": 78, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:18:00 [WARNING] [AI #24] API timeout (>5s)
-2026-02-28 19:18:00 [INFO] [AI #25] Requesting decision — Player HP:68 Enemy HP:130 Turn:122
-2026-02-28 19:18:00 [DEBUG] [AI #25] Full state: {"player": {"hp": 68, "pokemon_id": 1}, "enemy": {"hp": 130, "pokemon_id": 255}, "turn": 122}
-2026-02-28 19:18:02 [INFO] Stopping emulator...
-2026-02-28 19:18:02 [INFO] === SESSION STATS === uptime=260s ticks=10751 battles=4 ai_calls=25 errors=0 timeouts=2 avg_api=2881ms
-2026-02-28 19:18:03 [INFO] Emulator stopped.
+2026-03-01 12:16:07 [INFO] Using token from Copilot CLI credential store
+2026-03-01 12:16:07 [INFO] LLM ready: openai/gpt-4.1-mini via GitHub Models
+2026-03-01 12:16:07 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
+2026-03-01 12:16:08 [INFO] Loaded save state: .\cc_starter.state
+2026-03-01 12:16:08 [INFO] Emulator started — AI enabled: True
+2026-03-01 12:16:08 [INFO] 🎮 Emulator running — walk into tall grass!
+2026-03-01 12:16:18 [INFO] 📊 Stats: 9s uptime | 0 battles | 0 AI calls (0ms avg) | 0 errors
+2026-03-01 12:16:28 [INFO] 📊 Stats: 19s uptime | 0 battles | 0 AI calls (0ms avg) | 0 errors
+2026-03-01 12:16:38 [INFO] 📊 Stats: 29s uptime | 0 battles | 0 AI calls (0ms avg) | 0 errors
+2026-03-01 12:16:49 [INFO] 📊 Stats: 40s uptime | 0 battles | 0 AI calls (0ms avg) | 0 errors
+2026-03-01 12:16:59 [INFO] 📊 Stats: 50s uptime | 0 battles | 0 AI calls (0ms avg) | 0 errors
+2026-03-01 12:17:09 [INFO] 📊 Stats: 60s uptime | 0 battles | 0 AI calls (0ms avg) | 0 errors
+2026-03-01 12:17:18 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:18 [INFO] ⚔️  BATTLE #1 START
+2026-03-01 12:17:18 [INFO]   Wild Hoothoot (HP: 14) appeared!
+2026-03-01 12:17:18 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:17:18 [INFO]   vs. Player's Chikorita (HP: 20)
+2026-03-01 12:17:18 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:18 [INFO] ━━━ AI Turn #1 ━━━
+2026-03-01 12:17:18 [INFO]   Enemy:    Hoothoot (HP: 14)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:18 [INFO]   Opponent: Chikorita (HP: 20)
+2026-03-01 12:17:18 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 14)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 20)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:19 [INFO] 📊 Stats: 70s uptime | 1 battles | 1 AI calls (0ms avg) | 0 errors
+2026-03-01 12:17:19 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:19 [INFO] 🏁 BATTLE #1 ENDED
+2026-03-01 12:17:19 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:20 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:20 [INFO] ⚔️  BATTLE #2 START
+2026-03-01 12:17:20 [INFO]   Wild Hoothoot (HP: 14) appeared!
+2026-03-01 12:17:20 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:17:20 [INFO]   vs. Player's Chikorita (HP: 20)
+2026-03-01 12:17:20 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:20 [INFO]   ⚡ AI chose: Tackle (slot 0) in 2028ms
+2026-03-01 12:17:20 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and won't help immediately.
+2026-03-01 12:17:21 [INFO] ━━━ AI Turn #2 ━━━
+2026-03-01 12:17:21 [INFO]   Enemy:    Hoothoot (HP: 14)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:21 [INFO]   Opponent: Chikorita (HP: 20)
+2026-03-01 12:17:21 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 14)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 20)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:23 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1252ms
+2026-03-01 12:17:23 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and Chikorita has full HP.
+2026-03-01 12:17:24 [INFO] ━━━ AI Turn #3 ━━━
+2026-03-01 12:17:24 [INFO]   Enemy:    Hoothoot (HP: 14)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:24 [INFO]   Opponent: Chikorita (HP: 20)
+2026-03-01 12:17:24 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 14)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 20)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:26 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1200ms
+2026-03-01 12:17:26 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and Hoothoot has low HP; better to try to reduce opponent's HP quickly.
+2026-03-01 12:17:26 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:26 [INFO] 🏁 BATTLE #2 ENDED
+2026-03-01 12:17:26 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:29 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:29 [INFO] ⚔️  BATTLE #3 START
+2026-03-01 12:17:29 [INFO]   Wild Hoothoot (HP: 8) appeared!
+2026-03-01 12:17:29 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:17:29 [INFO]   vs. Player's Chikorita (HP: 20)
+2026-03-01 12:17:29 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:29 [INFO] ━━━ AI Turn #4 ━━━
+2026-03-01 12:17:29 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:29 [INFO]   Opponent: Chikorita (HP: 20)
+2026-03-01 12:17:29 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 20)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:29 [INFO] 📊 Stats: 80s uptime | 3 battles | 4 AI calls (1120ms avg) | 0 errors
+2026-03-01 12:17:30 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1048ms
+2026-03-01 12:17:30 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't be effective early and Hoothoot has low HP.
+2026-03-01 12:17:31 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:31 [INFO] 🏁 BATTLE #3 ENDED
+2026-03-01 12:17:31 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:34 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:34 [INFO] ⚔️  BATTLE #4 START
+2026-03-01 12:17:34 [INFO]   Wild Hoothoot (HP: 8) appeared!
+2026-03-01 12:17:34 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:17:34 [INFO]   vs. Player's Chikorita (HP: 18)
+2026-03-01 12:17:34 [INFO] ═══════════════════════════════════════
+2026-03-01 12:17:34 [INFO] ━━━ AI Turn #5 ━━━
+2026-03-01 12:17:34 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:34 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:34 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:35 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1107ms
+2026-03-01 12:17:35 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't be effective early on and Hoothoot has low HP.
+2026-03-01 12:17:37 [INFO] ━━━ AI Turn #6 ━━━
+2026-03-01 12:17:37 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:37 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:37 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:38 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1242ms
+2026-03-01 12:17:38 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't help since opponent's attack is not a threat now.
+2026-03-01 12:17:39 [INFO] 📊 Stats: 90s uptime | 4 battles | 6 AI calls (1313ms avg) | 0 errors
+2026-03-01 12:17:40 [INFO] ━━━ AI Turn #7 ━━━
+2026-03-01 12:17:40 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:40 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:40 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:41 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1346ms
+2026-03-01 12:17:41 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and Hoothoot has low HP, so offensive move is better.
+2026-03-01 12:17:43 [INFO] ━━━ AI Turn #8 ━━━
+2026-03-01 12:17:43 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:43 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:43 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:44 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1175ms
+2026-03-01 12:17:44 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and Hoothoot has low HP, so focus on offense.
+2026-03-01 12:17:46 [INFO] ━━━ AI Turn #9 ━━━
+2026-03-01 12:17:46 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:46 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:46 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:47 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1105ms
+2026-03-01 12:17:47 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and Hoothoot has low HP, so offensive action is better.
+2026-03-01 12:17:49 [INFO] 📊 Stats: 100s uptime | 4 battles | 9 AI calls (1278ms avg) | 0 errors
+2026-03-01 12:17:49 [INFO] ━━━ AI Turn #10 ━━━
+2026-03-01 12:17:49 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:49 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:49 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:50 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1757ms
+2026-03-01 12:17:50 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and won't help defeat Chikorita quickly.
+2026-03-01 12:17:52 [INFO] ━━━ AI Turn #11 ━━━
+2026-03-01 12:17:52 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:52 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:52 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:53 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1317ms
+2026-03-01 12:17:53 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and is less effective this early in the battle.
+2026-03-01 12:17:55 [INFO] ━━━ AI Turn #12 ━━━
+2026-03-01 12:17:55 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:55 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:55 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:56 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1078ms
+2026-03-01 12:17:56 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't help since opponent has higher HP and no immediate benefit.
+2026-03-01 12:17:58 [INFO] ━━━ AI Turn #13 ━━━
+2026-03-01 12:17:58 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:17:58 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:17:58 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:17:59 [INFO] 📊 Stats: 110s uptime | 4 battles | 13 AI calls (1204ms avg) | 0 errors
+2026-03-01 12:17:59 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1045ms
+2026-03-01 12:17:59 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's attack and is less effective at this stage.
+2026-03-01 12:18:01 [INFO] ━━━ AI Turn #14 ━━━
+2026-03-01 12:18:01 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:01 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:18:01 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:18:02 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1277ms
+2026-03-01 12:18:02 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't help as opponent has full HP and is not yet threatening.
+2026-03-01 12:18:04 [INFO] ━━━ AI Turn #15 ━━━
+2026-03-01 12:18:04 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:04 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:18:04 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:18:05 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1063ms
+2026-03-01 12:18:05 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't be effective early on and Hoothoot has low HP.
+2026-03-01 12:18:07 [INFO] ━━━ AI Turn #16 ━━━
+2026-03-01 12:18:07 [INFO]   Enemy:    Hoothoot (HP: 8)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:07 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:18:07 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 8)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:18:08 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1284ms
+2026-03-01 12:18:08 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl won't help since opponent's HP is high and we need to reduce it quickly.
+2026-03-01 12:18:09 [INFO] 📊 Stats: 120s uptime | 4 battles | 16 AI calls (1270ms avg) | 0 errors
+2026-03-01 12:18:09 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:09 [INFO] 🏁 BATTLE #4 ENDED
+2026-03-01 12:18:09 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:11 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:11 [INFO] ⚔️  BATTLE #5 START
+2026-03-01 12:18:11 [INFO]   Wild Hoothoot (HP: 2) appeared!
+2026-03-01 12:18:11 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:18:11 [INFO]   vs. Player's Chikorita (HP: 18)
+2026-03-01 12:18:11 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:11 [INFO] ━━━ AI Turn #17 ━━━
+2026-03-01 12:18:11 [INFO]   Enemy:    Hoothoot (HP: 2)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:11 [INFO]   Opponent: Chikorita (HP: 18)
+2026-03-01 12:18:11 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 2)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 18)
+- Turn: 2
+
+Choose which move to use.
+2026-03-01 12:18:13 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1366ms
+2026-03-01 12:18:13 [INFO]   💭 Reasoning: Only offensive move available and necessary to try to deal damage despite low HP.
+2026-03-01 12:18:14 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:14 [INFO] 🏁 BATTLE #5 ENDED
+2026-03-01 12:18:14 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:16 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:16 [INFO] ⚔️  BATTLE #6 START
+2026-03-01 12:18:16 [INFO]   Wild Hoothoot (HP: 2) appeared!
+2026-03-01 12:18:16 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:18:16 [INFO]   vs. Player's Chikorita (HP: 16)
+2026-03-01 12:18:16 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:16 [INFO] ━━━ AI Turn #18 ━━━
+2026-03-01 12:18:16 [INFO]   Enemy:    Hoothoot (HP: 2)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:16 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:16 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 2)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 2
+
+Choose which move to use.
+2026-03-01 12:18:18 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1289ms
+2026-03-01 12:18:18 [INFO]   💭 Reasoning: Hoothoot has very low HP, so using Tackle to try to deal damage quickly is best; Growl won't help much now.
+2026-03-01 12:18:19 [INFO] 📊 Stats: 130s uptime | 6 battles | 18 AI calls (1277ms avg) | 0 errors
+2026-03-01 12:18:19 [INFO] ━━━ AI Turn #19 ━━━
+2026-03-01 12:18:19 [INFO]   Enemy:    Hoothoot (HP: 2)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:19 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:19 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 2)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 2
+
+Choose which move to use.
+2026-03-01 12:18:21 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1139ms
+2026-03-01 12:18:21 [INFO]   💭 Reasoning: Use Tackle to try to deal damage despite low HP; Growl won't help defeat the opponent.
+2026-03-01 12:18:22 [INFO] ━━━ AI Turn #20 ━━━
+2026-03-01 12:18:22 [INFO]   Enemy:    Hoothoot (HP: 2)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:22 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:22 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 2)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 2
+
+Choose which move to use.
+2026-03-01 12:18:24 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1259ms
+2026-03-01 12:18:24 [INFO]   💭 Reasoning: Hoothoot has very low HP, so using Tackle to try to deal damage is best; Growl won't help defeat Chikorita.
+2026-03-01 12:18:25 [INFO] ━━━ AI Turn #21 ━━━
+2026-03-01 12:18:25 [INFO]   Enemy:    Hoothoot (HP: 2)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:25 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:25 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 2)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 2
+
+Choose which move to use.
+2026-03-01 12:18:26 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1018ms
+2026-03-01 12:18:26 [INFO]   💭 Reasoning: Use Tackle to try dealing damage despite low HP; Growl won't help defeat opponent.
+2026-03-01 12:18:29 [INFO] 📊 Stats: 140s uptime | 6 battles | 21 AI calls (1257ms avg) | 0 errors
+2026-03-01 12:18:29 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:29 [INFO] 🏁 BATTLE #6 ENDED
+2026-03-01 12:18:29 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:31 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:31 [INFO] ⚔️  BATTLE #7 START
+2026-03-01 12:18:31 [INFO]   Wild Hoothoot (HP: 0) appeared!
+2026-03-01 12:18:31 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:18:31 [INFO]   vs. Player's Chikorita (HP: 16)
+2026-03-01 12:18:31 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:31 [INFO] ━━━ AI Turn #22 ━━━
+2026-03-01 12:18:31 [INFO]   Enemy:    Hoothoot (HP: 0)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:31 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:31 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 0)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 3
+
+Choose which move to use.
+2026-03-01 12:18:32 [INFO]   ⚡ AI chose: Tackle (slot 0) in 973ms
+2026-03-01 12:18:32 [INFO]   💭 Reasoning: Hoothoot has fainted (HP 0), cannot make a move.
+2026-03-01 12:18:34 [INFO] ━━━ AI Turn #23 ━━━
+2026-03-01 12:18:34 [INFO]   Enemy:    Hoothoot (HP: 0)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:34 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:34 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 0)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 3
+
+Choose which move to use.
+2026-03-01 12:18:35 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1129ms
+2026-03-01 12:18:35 [INFO]   💭 Reasoning: Hoothoot has 0 HP and cannot attack.
+2026-03-01 12:18:37 [INFO] ━━━ AI Turn #24 ━━━
+2026-03-01 12:18:37 [INFO]   Enemy:    Hoothoot (HP: 0)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:37 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:37 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 0)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 3
+
+Choose which move to use.
+2026-03-01 12:18:38 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1009ms
+2026-03-01 12:18:38 [INFO]   💭 Reasoning: Hoothoot is fainted and cannot make a move.
+2026-03-01 12:18:39 [INFO] 📊 Stats: 150s uptime | 7 battles | 24 AI calls (1229ms avg) | 0 errors
+2026-03-01 12:18:40 [INFO] ━━━ AI Turn #25 ━━━
+2026-03-01 12:18:40 [INFO]   Enemy:    Hoothoot (HP: 0)  moves: ['Tackle', 'Growl']
+2026-03-01 12:18:40 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:18:40 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 0)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 3
+
+Choose which move to use.
+2026-03-01 12:18:41 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1136ms
+2026-03-01 12:18:41 [INFO]   💭 Reasoning: Hoothoot has fainted (HP 0), so it cannot make a move.
+2026-03-01 12:18:41 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:41 [INFO] 🏁 BATTLE #7 ENDED
+2026-03-01 12:18:41 [INFO] ═══════════════════════════════════════
+2026-03-01 12:18:49 [INFO] 📊 Stats: 160s uptime | 7 battles | 25 AI calls (1226ms avg) | 0 errors
+2026-03-01 12:18:59 [INFO] 📊 Stats: 170s uptime | 7 battles | 25 AI calls (1226ms avg) | 0 errors
+2026-03-01 12:19:06 [INFO] ═══════════════════════════════════════
+2026-03-01 12:19:06 [INFO] ⚔️  BATTLE #8 START
+2026-03-01 12:19:06 [INFO]   Wild Hoothoot (HP: 16) appeared!
+2026-03-01 12:19:06 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:19:06 [INFO]   vs. Player's Chikorita (HP: 16)
+2026-03-01 12:19:06 [INFO] ═══════════════════════════════════════
+2026-03-01 12:19:06 [INFO] ━━━ AI Turn #26 ━━━
+2026-03-01 12:19:06 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:06 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:06 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:06 [INFO] ═══════════════════════════════════════
+2026-03-01 12:19:06 [INFO] 🏁 BATTLE #8 ENDED
+2026-03-01 12:19:06 [INFO] ═══════════════════════════════════════
+2026-03-01 12:19:08 [INFO] ═══════════════════════════════════════
+2026-03-01 12:19:08 [INFO] ⚔️  BATTLE #9 START
+2026-03-01 12:19:08 [INFO]   Wild Hoothoot (HP: 16) appeared!
+2026-03-01 12:19:08 [INFO]   Moves: ['Tackle', 'Growl']
+2026-03-01 12:19:08 [INFO]   vs. Player's Chikorita (HP: 16)
+2026-03-01 12:19:08 [INFO] ═══════════════════════════════════════
+2026-03-01 12:19:08 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1992ms
+2026-03-01 12:19:08 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl lowers opponent's attack but does not directly damage.
+2026-03-01 12:19:09 [INFO] 📊 Stats: 180s uptime | 9 battles | 26 AI calls (1255ms avg) | 0 errors
+2026-03-01 12:19:09 [INFO] ━━━ AI Turn #27 ━━━
+2026-03-01 12:19:09 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:09 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:09 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:10 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1282ms
+2026-03-01 12:19:10 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's attack and is less effective early in the battle.
+2026-03-01 12:19:12 [INFO] ━━━ AI Turn #28 ━━━
+2026-03-01 12:19:12 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:12 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:12 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:13 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1587ms
+2026-03-01 12:19:13 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers opponent's attack and Hoothoot has low HP, so offensive move is better.
+2026-03-01 12:19:15 [INFO] ━━━ AI Turn #29 ━━━
+2026-03-01 12:19:15 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:15 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:15 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:16 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1391ms
+2026-03-01 12:19:16 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers opponent's attack and Chikorita's attack is not a threat now.
+2026-03-01 12:19:18 [INFO] ━━━ AI Turn #30 ━━━
+2026-03-01 12:19:18 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:18 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:18 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:19 [INFO] 📊 Stats: 190s uptime | 9 battles | 30 AI calls (1230ms avg) | 0 errors
+2026-03-01 12:19:19 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1082ms
+2026-03-01 12:19:19 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's attack which is less useful early in battle.
+2026-03-01 12:19:21 [INFO] ━━━ AI Turn #31 ━━━
+2026-03-01 12:19:21 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:21 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:21 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:22 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1162ms
+2026-03-01 12:19:22 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and does not cause damage.
+2026-03-01 12:19:24 [INFO] ━━━ AI Turn #32 ━━━
+2026-03-01 12:19:24 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:24 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:24 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:25 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1210ms
+2026-03-01 12:19:25 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl lowers opponent's attack but does no damage, and Chikorita's attack is not a threat yet.
+2026-03-01 12:19:27 [INFO] ━━━ AI Turn #33 ━━━
+2026-03-01 12:19:27 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:27 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:27 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:28 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1207ms
+2026-03-01 12:19:28 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's Attack, which is less useful against Chikorita's mostly special moves.
+2026-03-01 12:19:29 [INFO] 📊 Stats: 200s uptime | 9 battles | 33 AI calls (1259ms avg) | 0 errors
+2026-03-01 12:19:30 [INFO] ━━━ AI Turn #34 ━━━
+2026-03-01 12:19:30 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:30 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:30 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:31 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1577ms
+2026-03-01 12:19:31 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's attack and is less effective early in battle.
+2026-03-01 12:19:33 [INFO] ━━━ AI Turn #35 ━━━
+2026-03-01 12:19:33 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:33 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:33 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:34 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1020ms
+2026-03-01 12:19:34 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers attack and is less effective this turn.
+2026-03-01 12:19:36 [INFO] ━━━ AI Turn #36 ━━━
+2026-03-01 12:19:36 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:36 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:36 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:37 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1075ms
+2026-03-01 12:19:37 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers attack and won't help immediately.
+2026-03-01 12:19:39 [INFO] 📊 Stats: 210s uptime | 9 battles | 36 AI calls (1256ms avg) | 0 errors
+2026-03-01 12:19:39 [INFO] ━━━ AI Turn #37 ━━━
+2026-03-01 12:19:39 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:39 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:39 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:40 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1052ms
+2026-03-01 12:19:40 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and does not cause damage.
+2026-03-01 12:19:42 [INFO] ━━━ AI Turn #38 ━━━
+2026-03-01 12:19:42 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:42 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:42 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:43 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1094ms
+2026-03-01 12:19:43 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl lowers opponent's attack but dealing damage is more effective this turn.
+2026-03-01 12:19:45 [INFO] ━━━ AI Turn #39 ━━━
+2026-03-01 12:19:45 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:45 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:45 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:46 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1234ms
+2026-03-01 12:19:46 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl lowers opponent's attack but does not deal damage and is less effective early in battle.
+2026-03-01 12:19:48 [INFO] ━━━ AI Turn #40 ━━━
+2026-03-01 12:19:48 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:48 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:48 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:49 [INFO] 📊 Stats: 220s uptime | 9 battles | 40 AI calls (1215ms avg) | 0 errors
+2026-03-01 12:19:50 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1379ms
+2026-03-01 12:19:50 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers attack and is less effective this turn.
+2026-03-01 12:19:51 [INFO] ━━━ AI Turn #41 ━━━
+2026-03-01 12:19:51 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:51 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:51 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:52 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1080ms
+2026-03-01 12:19:52 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and won't help immediately.
+2026-03-01 12:19:54 [INFO] ━━━ AI Turn #42 ━━━
+2026-03-01 12:19:54 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:54 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:54 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:56 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1365ms
+2026-03-01 12:19:56 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and does not cause damage. Early in battle, dealing damage is better.
+2026-03-01 12:19:57 [INFO] ━━━ AI Turn #43 ━━━
+2026-03-01 12:19:57 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:19:57 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:19:57 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:19:58 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1067ms
+2026-03-01 12:19:58 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's attack and is less effective this turn.
+2026-03-01 12:19:59 [INFO] 📊 Stats: 230s uptime | 9 battles | 43 AI calls (1244ms avg) | 0 errors
+2026-03-01 12:20:00 [INFO] ━━━ AI Turn #44 ━━━
+2026-03-01 12:20:00 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:20:00 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:20:00 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:20:02 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1380ms
+2026-03-01 12:20:02 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers attack and is less effective this early.
+2026-03-01 12:20:03 [INFO] ━━━ AI Turn #45 ━━━
+2026-03-01 12:20:03 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:20:03 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:20:03 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:20:04 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1046ms
+2026-03-01 12:20:04 [INFO]   💭 Reasoning: Use Tackle to deal damage since Growl only lowers attack and won't help immediately.
+2026-03-01 12:20:06 [INFO] ━━━ AI Turn #46 ━━━
+2026-03-01 12:20:06 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:20:06 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:20:06 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:20:08 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1308ms
+2026-03-01 12:20:08 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers attack and doesn't help immediately.
+2026-03-01 12:20:09 [INFO] ━━━ AI Turn #47 ━━━
+2026-03-01 12:20:09 [INFO]   Enemy:    Hoothoot (HP: 16)  moves: ['Tackle', 'Growl']
+2026-03-01 12:20:09 [INFO]   Opponent: Chikorita (HP: 16)
+2026-03-01 12:20:09 [DEBUG]   LLM prompt: Battle state:
+- Your Pokemon: Hoothoot (HP: 16)
+- Your moves: [slot 0: Tackle, slot 1: Growl]
+- Opponent: Chikorita (HP: 16)
+- Turn: 1
+
+Choose which move to use.
+2026-03-01 12:20:09 [INFO] 📊 Stats: 241s uptime | 9 battles | 47 AI calls (1218ms avg) | 0 errors
+2026-03-01 12:20:09 [INFO] ═══════════════════════════════════════
+2026-03-01 12:20:09 [INFO] 🏁 BATTLE #9 ENDED
+2026-03-01 12:20:09 [INFO] ═══════════════════════════════════════
+2026-03-01 12:20:10 [INFO]   ⚡ AI chose: Tackle (slot 0) in 1179ms
+2026-03-01 12:20:10 [INFO]   💭 Reasoning: Use Tackle to deal damage; Growl only lowers opponent's attack and Chikorita's attack is not a threat yet.
+2026-03-01 12:20:19 [INFO] 📊 Stats: 251s uptime | 9 battles | 47 AI calls (1243ms avg) | 0 errors
+2026-03-01 12:20:29 [INFO] 📊 Stats: 261s uptime | 9 battles | 47 AI calls (1243ms avg) | 0 errors
+2026-03-01 12:20:39 [INFO] 📊 Stats: 271s uptime | 9 battles | 47 AI calls (1243ms avg) | 0 errors

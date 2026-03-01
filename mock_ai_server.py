@@ -67,18 +67,17 @@ if not GITHUB_TOKEN:
 client = OpenAI(base_url="https://models.github.ai/inference", api_key=GITHUB_TOKEN)
 
 SYSTEM_PROMPT = """\
-You are a Pokemon battle AI for Pokemon Crystal. You receive the current battle state \
-and must choose the best action. Respond with ONLY valid JSON — no markdown, no explanation outside the JSON.
+You are the enemy Pokemon's battle AI in Pokemon Crystal. You control a wild or trainer's Pokemon \
+fighting against the player. Pick the best move to defeat the player's Pokemon.
+Respond with ONLY valid JSON — no markdown, no explanation outside the JSON.
 
 JSON format:
 {"action": "move", "move_index": <0-3>, "reasoning": "<short explanation>"}
 
-Actions:
-- "move": use a move (move_index 0-3)
-- "switch": switch pokemon (include "pokemon_index")
-- "item": use an item (include "item_id")
+You can ONLY use "move". You cannot switch or use items — you are a wild/trainer Pokemon.
+move_index corresponds to the move slot (0 = first move, 1 = second, etc).
 
-Be strategic: consider HP, type advantages, and momentum."""
+Be strategic: consider HP, type advantages, and move power."""
 
 # ---------------------------------------------------------------------------
 # Routes
@@ -87,16 +86,21 @@ Be strategic: consider HP, type advantages, and momentum."""
 @app.route("/api/battle-decision", methods=["POST"])
 def battle_decision():
     battle_state = request.json
-    log.info("Battle state: Player HP=%s Enemy HP=%s Turn=%s",
-             battle_state["player"]["hp"], battle_state["enemy"]["hp"],
+    your = battle_state["your_pokemon"]
+    opp = battle_state["opponent"]
+    log.info("Battle state: Your Pokemon=%s HP=%s | Opponent=%s HP=%s | Turn=%s",
+             your["pokemon_id"], your["hp"],
+             opp["pokemon_id"], opp["hp"],
              battle_state["turn"])
 
+    moves_str = ", ".join(f"slot {i}: move ID {m}" for i, m in enumerate(your.get("moves", [])))
     user_msg = (
         f"Battle state:\n"
-        f"- Player Pokemon ID: {battle_state['player']['pokemon_id']}, HP: {battle_state['player']['hp']}\n"
-        f"- Enemy Pokemon ID: {battle_state['enemy']['pokemon_id']}, HP: {battle_state['enemy']['hp']}\n"
+        f"- Your Pokemon ID: {your['pokemon_id']}, HP: {your['hp']}\n"
+        f"- Your available moves: [{moves_str}]\n"
+        f"- Opponent Pokemon ID: {opp['pokemon_id']}, HP: {opp['hp']}\n"
         f"- Turn: {battle_state['turn']}\n"
-        f"\nChoose the best action."
+        f"\nChoose which move to use."
     )
 
     try:

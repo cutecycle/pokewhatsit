@@ -1,0 +1,1204 @@
+Loaded save state
+Playing... walk into tall grass to trigger a battle.
+Will dump candidate addresses every 60 frames when battle-like values appear.
+
+--- tick 2595 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 0 (0x00)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 0 (0x00)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,0] BE=0 LE=0
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,0] BE=0 LE=0
+
+--- tick 2656 | D22D=2 D0EA=198 ---
+  C62C_species (0xC62C) = 0 (0x00)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 0 (0x00)
+  D16C_species (0xD16C) = 2 (0x02)
+  D16E_hp (0xD16E) = 2 (0x02)
+  D174_species2 (0xD174) = 2 (0x02)
+  D206_enemy_sp (0xD206) = 2 (0x02)
+  D216_enemy_hp (0xD216) = 2 (0x02)
+  D22D_battle (0xD22D) = 2 (0x02)
+  D0EA_battle (0xD0EA) = 198 (0xC6)
+  C63C_HP: bytes=[0,0] BE=0 LE=0
+  D16E_HP: bytes=[2,2] BE=514 LE=514
+  D216_HP: bytes=[2,2] BE=514 LE=514
+
+--- tick 2745 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 0 (0x00)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 0 (0x00)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,0] BE=0 LE=0
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 2822 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 0 (0x00)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 0 (0x00)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,0] BE=0 LE=0
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 2883 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 0 (0x00)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 0 (0x00)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,0] BE=0 LE=0
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 2944 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 3005 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 3066 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 3127 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 3188 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 3296 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,13] BE=13 LE=3328
+
+--- tick 3357 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3418 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3479 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3567 | D22D=2 D0EA=44 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 20 (0x14)
+  D16C_species (0xD16C) = 0 (0x00)
+  D16E_hp (0xD16E) = 0 (0x00)
+  D174_species2 (0xD174) = 0 (0x00)
+  D206_enemy_sp (0xD206) = 2 (0x02)
+  D216_enemy_hp (0xD216) = 2 (0x02)
+  D22D_battle (0xD22D) = 2 (0x02)
+  D0EA_battle (0xD0EA) = 44 (0x2C)
+  C63C_HP: bytes=[0,20] BE=20 LE=5120
+  D16E_HP: bytes=[0,0] BE=0 LE=0
+  D216_HP: bytes=[2,2] BE=514 LE=514
+
+--- tick 3648 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3709 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3770 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3831 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3892 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 3953 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4014 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4075 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4136 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4197 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4258 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4319 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4380 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4441 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4502 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4563 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4624 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4685 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4746 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4807 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4868 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4929 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 4990 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5051 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5112 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5173 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5234 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5295 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5356 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5417 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5478 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5539 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5600 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5661 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5722 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5783 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5844 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5905 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 5966 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6027 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6088 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6149 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6210 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6271 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6332 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6393 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6454 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6515 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6576 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6637 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6698 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6759 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6820 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6881 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 6942 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7003 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7064 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7125 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7186 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7247 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7308 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7369 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7430 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7491 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+
+--- tick 7552 | D22D=1 D0EA=0 ---
+  C62C_species (0xC62C) = 152 (0x98)
+  C63C_hp_hi (0xC63C) = 0 (0x00)
+  C63D_hp_lo (0xC63D) = 18 (0x12)
+  D16C_species (0xD16C) = 51 (0x33)
+  D16E_hp (0xD16E) = 71 (0x47)
+  D174_species2 (0xD174) = 27 (0x1B)
+  D206_enemy_sp (0xD206) = 19 (0x13)
+  D216_enemy_hp (0xD216) = 0 (0x00)
+  D22D_battle (0xD22D) = 1 (0x01)
+  D0EA_battle (0xD0EA) = 0 (0x00)
+  C63C_HP: bytes=[0,18] BE=18 LE=4608
+  D16E_HP: bytes=[71,164] BE=18340 LE=42055
+  D216_HP: bytes=[0,7] BE=7 LE=1792
+

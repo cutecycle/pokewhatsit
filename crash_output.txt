@@ -1,0 +1,10 @@
+UserWarning: Using SDL2 binaries from pysdl2-dll 2.32.0
+2026-03-01 11:46:46 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
+2026-03-01 11:46:47 [INFO] Loaded save state: .\cc_starter.state
+2026-03-01 11:46:47 [INFO] Emulator started successfully!
+2026-03-01 11:46:47 [INFO] AI API endpoint: http://localhost:5000/api/battle-decision
+2026-03-01 11:46:47 [INFO] AI enabled: True
+2026-03-01 11:46:47 [INFO] Emulator running. Press Ctrl+C to stop.
+2026-03-01 11:46:47 [INFO] AI will be called during enemy turns in battle.
+2026-03-01 11:46:52 [INFO] === SESSION STATS === uptime=5s ticks=300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-03-01 11:46:57 [INFO] === SESSION STATS === uptime=10s ticks=600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
