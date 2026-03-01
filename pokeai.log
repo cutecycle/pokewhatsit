@@ -1,0 +1,147 @@
+2026-02-28 19:13:42 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
+2026-02-28 19:13:43 [INFO] Emulator started successfully!
+2026-02-28 19:13:43 [INFO] AI API endpoint: http://localhost:5000/api/battle-decision
+2026-02-28 19:13:43 [INFO] AI enabled: True
+2026-02-28 19:13:43 [INFO] Emulator running. Press Ctrl+C to stop.
+2026-02-28 19:13:43 [INFO] AI will be called during enemy turns in battle.
+2026-02-28 19:13:48 [INFO] === SESSION STATS === uptime=5s ticks=300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:13:53 [INFO] === SESSION STATS === uptime=10s ticks=600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:13:56 [INFO] === SESSION STATS === uptime=13s ticks=900 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:13:56 [INFO] === SESSION STATS === uptime=14s ticks=1200 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:13:59 [INFO] === SESSION STATS === uptime=16s ticks=1500 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:04 [INFO] === SESSION STATS === uptime=21s ticks=1800 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:10 [INFO] === SESSION STATS === uptime=27s ticks=2100 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:15 [INFO] === SESSION STATS === uptime=32s ticks=2400 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:20 [INFO] === SESSION STATS === uptime=37s ticks=2700 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:25 [INFO] === SESSION STATS === uptime=42s ticks=3000 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:30 [INFO] === SESSION STATS === uptime=47s ticks=3300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:35 [INFO] === SESSION STATS === uptime=52s ticks=3600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:40 [INFO] === SESSION STATS === uptime=57s ticks=3900 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:45 [INFO] === SESSION STATS === uptime=62s ticks=4200 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:50 [INFO] === SESSION STATS === uptime=67s ticks=4500 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:14:55 [INFO] === SESSION STATS === uptime=73s ticks=4800 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:00 [INFO] === SESSION STATS === uptime=78s ticks=5100 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:05 [INFO] === SESSION STATS === uptime=83s ticks=5400 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:10 [INFO] === SESSION STATS === uptime=88s ticks=5700 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:15 [INFO] === SESSION STATS === uptime=93s ticks=6000 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:20 [INFO] === SESSION STATS === uptime=98s ticks=6300 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:25 [INFO] === SESSION STATS === uptime=103s ticks=6600 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:30 [INFO] === SESSION STATS === uptime=108s ticks=6900 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:35 [INFO] === SESSION STATS === uptime=113s ticks=7200 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:40 [INFO] === SESSION STATS === uptime=118s ticks=7500 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:45 [INFO] === SESSION STATS === uptime=123s ticks=7800 battles=0 ai_calls=0 errors=0 timeouts=0 avg_api=0ms
+2026-02-28 19:15:46 [INFO] *** BATTLE #1 STARTED ***
+2026-02-28 19:15:46 [INFO] [AI #1] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
+2026-02-28 19:15:46 [DEBUG] [AI #1] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:15:50 [INFO] [AI #1] Decision in 3765ms: action=switch move=None reason=Current Pokemon fainted, must switch to another Pokemon.
+2026-02-28 19:15:50 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:15:50 [INFO] [AI #2] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
+2026-02-28 19:15:50 [DEBUG] [AI #2] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:15:54 [INFO] [AI #2] Decision in 3610ms: action=switch move=None reason=Current Pokemon is fainted, must switch to another Pokemon.
+2026-02-28 19:15:54 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:15:54 [INFO] [AI #3] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
+2026-02-28 19:15:54 [DEBUG] [AI #3] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:15:57 [INFO] [AI #3] Decision in 3356ms: action=switch move=None reason=Current Pokémon fainted, must switch to another Pokémon.
+2026-02-28 19:15:57 [DEBUG] Switching to Pokemon 2
+2026-02-28 19:15:57 [INFO] [AI #4] Requesting decision — Player HP:0 Enemy HP:127 Turn:192
+2026-02-28 19:15:57 [DEBUG] [AI #4] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 127, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:16:00 [INFO] [AI #4] Decision in 3071ms: action=switch move=None reason=Current Pokemon fainted, must switch to another Pokemon.
+2026-02-28 19:16:00 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:16:00 [INFO] *** BATTLE #1 ENDED ***
+2026-02-28 19:16:04 [INFO] === SESSION STATS === uptime=141s ticks=8100 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:09 [INFO] === SESSION STATS === uptime=146s ticks=8400 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:14 [INFO] === SESSION STATS === uptime=151s ticks=8700 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:19 [INFO] === SESSION STATS === uptime=156s ticks=9000 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:24 [INFO] === SESSION STATS === uptime=161s ticks=9300 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:29 [INFO] === SESSION STATS === uptime=166s ticks=9600 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:34 [INFO] === SESSION STATS === uptime=171s ticks=9900 battles=1 ai_calls=4 errors=0 timeouts=0 avg_api=3450ms
+2026-02-28 19:16:38 [INFO] *** BATTLE #2 STARTED ***
+2026-02-28 19:16:38 [INFO] [AI #5] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
+2026-02-28 19:16:38 [DEBUG] [AI #5] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:16:42 [INFO] [AI #5] Decision in 3629ms: action=move move=0 reason=Battle is over, but defaulting to first move as no other action is possible.
+2026-02-28 19:16:42 [DEBUG] Executing move 1
+2026-02-28 19:16:42 [INFO] [AI #6] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
+2026-02-28 19:16:42 [DEBUG] [AI #6] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:16:45 [INFO] [AI #6] Decision in 3095ms: action=switch move=None reason=Current Pokémon fainted, must switch to a new Pokémon.
+2026-02-28 19:16:45 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:16:45 [INFO] [AI #7] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
+2026-02-28 19:16:45 [DEBUG] [AI #7] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:16:48 [INFO] [AI #7] Decision in 3106ms: action=switch move=None reason=Current Pokémon fainted, must switch to another Pokémon.
+2026-02-28 19:16:48 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:16:48 [INFO] [AI #8] Requesting decision — Player HP:0 Enemy HP:0 Turn:192
+2026-02-28 19:16:48 [DEBUG] [AI #8] Full state: {"player": {"hp": 0, "pokemon_id": 255}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:16:51 [INFO] [AI #8] Decision in 3090ms: action=switch move=None reason=Current Pokémon fainted, need to switch to a new Pokémon.
+2026-02-28 19:16:51 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:16:51 [INFO] *** BATTLE #2 ENDED ***
+2026-02-28 19:16:52 [INFO] === SESSION STATS === uptime=189s ticks=10200 battles=2 ai_calls=8 errors=0 timeouts=0 avg_api=3340ms
+2026-02-28 19:16:57 [INFO] === SESSION STATS === uptime=194s ticks=10500 battles=2 ai_calls=8 errors=0 timeouts=0 avg_api=3340ms
+2026-02-28 19:17:01 [INFO] *** BATTLE #3 STARTED ***
+2026-02-28 19:17:01 [INFO] [AI #9] Requesting decision — Player HP:127 Enemy HP:17 Turn:192
+2026-02-28 19:17:01 [DEBUG] [AI #9] Full state: {"player": {"hp": 127, "pokemon_id": 255}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 192}
+2026-02-28 19:17:04 [INFO] [AI #9] Decision in 3416ms: action=move move=0 reason=Enemy Pokemon is low on HP, use first move to finish the battle quickly.
+2026-02-28 19:17:04 [DEBUG] Executing move 1
+2026-02-28 19:17:04 [INFO] [AI #10] Requesting decision — Player HP:127 Enemy HP:17 Turn:68
+2026-02-28 19:17:04 [DEBUG] [AI #10] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 68}
+2026-02-28 19:17:08 [INFO] [AI #10] Decision in 3530ms: action=move move=0 reason=Enemy HP is very low, use a move to finish the battle quickly.
+2026-02-28 19:17:08 [DEBUG] Executing move 1
+2026-02-28 19:17:08 [INFO] [AI #11] Requesting decision — Player HP:96 Enemy HP:96 Turn:96
+2026-02-28 19:17:08 [DEBUG] [AI #11] Full state: {"player": {"hp": 96, "pokemon_id": 96}, "enemy": {"hp": 96, "pokemon_id": 255}, "turn": 96}
+2026-02-28 19:17:11 [INFO] [AI #11] Decision in 3093ms: action=move move=0 reason=No additional info on moves or types, so use first move by default.
+2026-02-28 19:17:11 [DEBUG] Executing move 1
+2026-02-28 19:17:11 [INFO] [AI #12] Requesting decision — Player HP:96 Enemy HP:96 Turn:96
+2026-02-28 19:17:11 [DEBUG] [AI #12] Full state: {"player": {"hp": 96, "pokemon_id": 96}, "enemy": {"hp": 96, "pokemon_id": 255}, "turn": 96}
+2026-02-28 19:17:14 [INFO] [AI #12] Decision in 3071ms: action=move move=0 reason=Use the first move as no other information is given; maintain offensive pressure.
+2026-02-28 19:17:14 [DEBUG] Executing move 1
+2026-02-28 19:17:14 [INFO] [AI #13] Requesting decision — Player HP:127 Enemy HP:17 Turn:96
+2026-02-28 19:17:14 [DEBUG] [AI #13] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 96}
+2026-02-28 19:17:17 [INFO] [AI #13] Decision in 3014ms: action=move move=0 reason=Enemy is very low on HP, use a move to finish the battle quickly.
+2026-02-28 19:17:17 [DEBUG] Executing move 1
+2026-02-28 19:17:17 [INFO] [AI #14] Requesting decision — Player HP:127 Enemy HP:17 Turn:122
+2026-02-28 19:17:17 [DEBUG] [AI #14] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:20 [INFO] [AI #14] Decision in 3150ms: action=move move=0 reason=Enemy has very low HP, use first move to finish the battle quickly.
+2026-02-28 19:17:20 [DEBUG] Executing move 1
+2026-02-28 19:17:20 [INFO] [AI #15] Requesting decision — Player HP:127 Enemy HP:17 Turn:122
+2026-02-28 19:17:20 [DEBUG] [AI #15] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:23 [INFO] [AI #15] Decision in 3089ms: action=move move=0 reason=Enemy is very low on HP; use first move to finish it off quickly.
+2026-02-28 19:17:23 [DEBUG] Executing move 1
+2026-02-28 19:17:23 [INFO] [AI #16] Requesting decision — Player HP:127 Enemy HP:17 Turn:122
+2026-02-28 19:17:23 [DEBUG] [AI #16] Full state: {"player": {"hp": 127, "pokemon_id": 1}, "enemy": {"hp": 17, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:26 [INFO] [AI #16] Decision in 3099ms: action=move move=0 reason=Enemy Pokemon has very low HP (17), using move 0 to finish it off quickly.
+2026-02-28 19:17:26 [DEBUG] Executing move 1
+2026-02-28 19:17:26 [INFO] [AI #17] Requesting decision — Player HP:192 Enemy HP:254 Turn:122
+2026-02-28 19:17:26 [DEBUG] [AI #17] Full state: {"player": {"hp": 192, "pokemon_id": 1}, "enemy": {"hp": 254, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:29 [INFO] [AI #17] Decision in 3164ms: action=move move=0 reason=No additional information on moves or opponent type, using first move by default.
+2026-02-28 19:17:29 [DEBUG] Executing move 1
+2026-02-28 19:17:29 [INFO] [AI #18] Requesting decision — Player HP:0 Enemy HP:0 Turn:122
+2026-02-28 19:17:29 [DEBUG] [AI #18] Full state: {"player": {"hp": 0, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:33 [INFO] [AI #18] Decision in 3247ms: action=switch move=None reason=Current Pokémon fainted, must switch to another Pokémon.
+2026-02-28 19:17:33 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:17:33 [INFO] [AI #19] Requesting decision — Player HP:0 Enemy HP:0 Turn:122
+2026-02-28 19:17:33 [DEBUG] [AI #19] Full state: {"player": {"hp": 0, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:36 [INFO] [AI #19] Decision in 3205ms: action=switch move=None reason=Player's current Pokemon is fainted; must switch to a new Pokemon.
+2026-02-28 19:17:36 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:17:36 [INFO] [AI #20] Requesting decision — Player HP:0 Enemy HP:0 Turn:122
+2026-02-28 19:17:36 [DEBUG] [AI #20] Full state: {"player": {"hp": 0, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:39 [INFO] [AI #20] Decision in 3224ms: action=switch move=None reason=Current Pokemon fainted, must switch to a new Pokemon.
+2026-02-28 19:17:39 [DEBUG] Switching to Pokemon 1
+2026-02-28 19:17:39 [INFO] *** BATTLE #3 ENDED ***
+2026-02-28 19:17:39 [INFO] *** BATTLE #4 STARTED ***
+2026-02-28 19:17:39 [INFO] [AI #21] Requesting decision — Player HP:132 Enemy HP:66 Turn:122
+2026-02-28 19:17:39 [DEBUG] [AI #21] Full state: {"player": {"hp": 132, "pokemon_id": 1}, "enemy": {"hp": 66, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:42 [INFO] [AI #21] Decision in 3100ms: action=move move=0 reason=Enemy HP is low, use first move to try to finish the opponent quickly.
+2026-02-28 19:17:42 [DEBUG] Executing move 1
+2026-02-28 19:17:42 [INFO] [AI #22] Requesting decision — Player HP:130 Enemy HP:132 Turn:122
+2026-02-28 19:17:42 [DEBUG] [AI #22] Full state: {"player": {"hp": 130, "pokemon_id": 1}, "enemy": {"hp": 132, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:46 [INFO] [AI #22] Decision in 3891ms: action=move move=0 reason=No additional information on moves or types, default to first move to maintain pressure.
+2026-02-28 19:17:46 [DEBUG] Executing move 1
+2026-02-28 19:17:46 [INFO] [AI #23] Requesting decision — Player HP:64 Enemy HP:0 Turn:122
+2026-02-28 19:17:46 [DEBUG] [AI #23] Full state: {"player": {"hp": 64, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:17:53 [WARNING] [AI #23] API timeout (>5s)
+2026-02-28 19:17:53 [INFO] [AI #24] Requesting decision — Player HP:78 Enemy HP:0 Turn:122
+2026-02-28 19:17:53 [DEBUG] [AI #24] Full state: {"player": {"hp": 78, "pokemon_id": 1}, "enemy": {"hp": 0, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:18:00 [WARNING] [AI #24] API timeout (>5s)
+2026-02-28 19:18:00 [INFO] [AI #25] Requesting decision — Player HP:68 Enemy HP:130 Turn:122
+2026-02-28 19:18:00 [DEBUG] [AI #25] Full state: {"player": {"hp": 68, "pokemon_id": 1}, "enemy": {"hp": 130, "pokemon_id": 255}, "turn": 122}
+2026-02-28 19:18:02 [INFO] Stopping emulator...
+2026-02-28 19:18:02 [INFO] === SESSION STATS === uptime=260s ticks=10751 battles=4 ai_calls=25 errors=0 timeouts=2 avg_api=2881ms
+2026-02-28 19:18:03 [INFO] Emulator stopped.
