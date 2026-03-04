@@ -1,1 +1,3 @@
 *.gbc
+screenshots/
+dialogue_cache.json

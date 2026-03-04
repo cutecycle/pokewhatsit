@@ -1,0 +1,67 @@
+UserWarning: Using SDL2 binaries from pysdl2-dll 2.32.0
+2026-03-01 16:59:38 [INFO] Session ID: 8936d0c3 (calls: 0/80)
+2026-03-01 16:59:38 [INFO] \U0001f4c2 Loaded dialogue cache: 704 lines across 88 areas (0 stale lines dropped)
+2026-03-01 16:59:38 [INFO] AI provider: Copilot CLI (model: claude-haiku-4.5)
+2026-03-01 16:59:38 [INFO] Loading ROM: Pokemon - Crystal Version (USA, Europe) (Rev 1).gbc
+2026-03-01 16:59:39 [INFO] Loaded save state: .\cc_starter.state
+2026-03-01 16:59:39 [INFO] Encounter hook registered (Bank 10, Addr 0x60F6)
+2026-03-01 16:59:39 [INFO] Resuming existing session: 8936d0c3
+2026-03-01 16:59:39 [INFO] Emulator started ù vibe: "kaizo with hilarious text"
+2026-03-01 16:59:39 [INFO] \U0001f3ae Emulator running at 2x speed ù walk into tall grass!
+2026-03-01 16:59:39 [INFO] \U0001f5fa\ufe0f  Entered: New Bark Town
+2026-03-01 16:59:45 [INFO] \U0001f4ca Stats: 5s | 0 battles | 0 battle AI calls (0ms avg) | 0 dialogues | 704 cached lines | 24 prefetch pending | 0 errors
+2026-03-01 16:59:51 [INFO] \U0001f4ca Stats: 12s | 0 battles | 0 battle AI calls (0ms avg) | 0 dialogues | 704 cached lines | 24 prefetch pending | 0 errors
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [17]: DIALOGUE BATCH for New Bark Town. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [17]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for New Bark Town: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [15]: DIALOGUE BATCH for Wills Room. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [15]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Wills Room: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [16]: ENCOUNTER: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Pick a wild Pokemon and 4 moves it should know. JSON: {"species_id": <1-251>, "moves": ["MoveName1", "MoveName2", "MoveName3", "MoveName4"], "reasoning": "..."}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [16]: ```json
+{
+  "species_id": 167,
+  "moves": ["Poison Powder", "String Shot", "Scary Face", "Bite"],
+  "reasoning": "Spinarak is a Bug/Poison type appropriate for early Johto routes, providing type and movepool diversity from previous encounters. At level 5, it matches Chikorita's power level. Poison Powder introduces status effects and toxins
+2026-03-01 16:59:56 [WARNING] Encounter AI bad response: ```json
+{
+  "species_id": 167,
+  "moves": ["Poison Powder", "String Shot", "Scary Face", "Bite"],
+  "reasoning": "Spinarak is a Bug/Poison type appropriate for early Johto routes, providing type and movepool diversity from previous encounters. At level 5, it matches Chikorita's power level. Poison Powder introduces status effects and toxins
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [14]: DIALOGUE BATCH for Dark Cave. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [14]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Dark Cave: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [13]: DIALOGUE BATCH for Violet City. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [13]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Violet City: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [9]: DIALOGUE BATCH for Route 46. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [9]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Route 46: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [11]: DIALOGUE BATCH for Silver Cave. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [11]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Silver Cave: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [12]: DIALOGUE BATCH for Blackthorn City. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [12]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Blackthorn City: None
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [10]: DIALOGUE BATCH for Route 30. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [10]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Route 30: None
+2026-03-01 16:59:56 [INFO] \U0001f4ca Stats: 17s | 0 battles | 0 battle AI calls (0ms avg) | 0 dialogues | 704 cached lines | 16 prefetch pending | 0 errors
+2026-03-01 16:59:56 [INFO] \U0001f916 PROMPT [8]: DIALOGUE BATCH for Route 26. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:56 [INFO] \U0001f916 RESPONSE [8]: (empty)
+2026-03-01 16:59:56 [WARNING] Dialogue batch bad response for Route 26: None
+2026-03-01 16:59:57 [INFO] \U0001f916 PROMPT [4]: DIALOGUE BATCH for Elms House. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:57 [INFO] \U0001f916 RESPONSE [4]: (empty)
+2026-03-01 16:59:57 [WARNING] Dialogue batch bad response for Elms House: None
+2026-03-01 16:59:57 [INFO] \U0001f916 PROMPT [7]: DIALOGUE BATCH for Tohjo Falls. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:57 [INFO] \U0001f916 RESPONSE [7]: (empty)
+2026-03-01 16:59:57 [WARNING] Dialogue batch bad response for Tohjo Falls: None
+2026-03-01 16:59:57 [INFO] \U0001f916 PROMPT [2]: DIALOGUE BATCH for Elms Lab. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:57 [INFO] \U0001f916 RESPONSE [2]: (empty)
+2026-03-01 16:59:57 [WARNING] Dialogue batch bad response for Elms Lab: None
+2026-03-01 16:59:57 [INFO] \U0001f916 PROMPT [6]: DIALOGUE BATCH for Cherrygrove City. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:57 [INFO] \U0001f916 RESPONSE [6]: (empty)
+2026-03-01 16:59:57 [WARNING] Dialogue batch bad response for Cherrygrove City: None
+2026-03-01 16:59:57 [INFO] \U0001f916 PROMPT [3]: DIALOGUE BATCH for Players House 1F. Context: Player at New Bark Town, 0 badges. Party: Lv5 Chikorita 20/20HP [Tackle(35pp), Growl(40pp)]. Story so far: Entered New Bark Town. Game: Pokemon Crystal Johto region. Generate 8 NPC dialogues, one per NPC where possible, tailored to their type and position. Include references to the area, nearby landmarks, and Pokemon. STRICT: each line1 and line2 MUST be 18 chars or fewer. Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. JSON: {"dialogues": [{"line1": "...", "line2": "..."}, ...]}
+2026-03-01 16:59:57 [INFO] \U0001f916 RESPONSE [3]: I'll generate 8 NPC dialogues for Players House 1F in New Bark Town, carefully ensuring each line is \u226418 characters.
+2026-03-01 16:59:57 [WARNING] Dialogue batch bad response for Players House 1F: I'll generate 8 NPC dialogues for Players House 1F in New Bark Town, carefully ensuring each line is \u226418 characters.

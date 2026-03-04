@@ -7,8 +7,17 @@ import logging
 import os
 import sys
 from pyboy import PyBoy
+from pyboy.utils import WindowEvent
 import threading
 import time
+
+# All Game Boy button release events — sent each tick to suppress player input
+_ALL_RELEASES = [
+    WindowEvent.RELEASE_BUTTON_A, WindowEvent.RELEASE_BUTTON_B,
+    WindowEvent.RELEASE_BUTTON_START, WindowEvent.RELEASE_BUTTON_SELECT,
+    WindowEvent.RELEASE_ARROW_UP, WindowEvent.RELEASE_ARROW_DOWN,
+    WindowEvent.RELEASE_ARROW_LEFT, WindowEvent.RELEASE_ARROW_RIGHT,
+]
 
 LOG_FILE = "pokeai.log"
 
@@ -157,11 +166,34 @@ def move_name(mid):
 # Reverse lookup: move name → ID (case-insensitive)
 MOVE_NAME_TO_ID = {name.lower(): mid for mid, name in MOVE_NAMES.items()}
 
+# Gen 2 held item name → ID (common competitive items)
+ITEM_NAME_TO_ID = {
+    "leftovers": 0xA9, "berry": 0x2F, "gold berry": 0x30,
+    "kings rock": 0xBD, "focus band": 0xC4, "scope lens": 0xC5,
+    "bright powder": 0xB4, "quick claw": 0xBE, "miracle seed": 0x9E,
+    "charcoal": 0x9F, "mystic water": 0xA0, "sharp beak": 0xA1,
+    "poison barb": 0xA2, "never melt ice": 0xA3, "spell tag": 0xA4,
+    "twisted spoon": 0xA5, "soft sand": 0x9D, "hard stone": 0x9C,
+    "silver powder": 0x9B, "metal coat": 0xA6, "polkadot bow": 0xA8,
+    "dragon fang": 0xA7, "black belt": 0x9A, "pink bow": 0xA8,
+    "black glasses": 0xAB, "magnet": 0x99, "thick club": 0xC2,
+    "light ball": 0xC1, "stick": 0xC3, "metal powder": 0xC0,
+    "berry juice": 0x2F, "mint berry": 0x31, "ice berry": 0x32,
+    "burnt berry": 0x33, "przcureberry": 0x34, "psncureberry": 0x36,
+    "bitter berry": 0x35, "miracleberry": 0x37,
+}
+
+def item_id_from_name(name):
+    """Look up Gen 2 item ID from name (case-insensitive). Returns 0 if not found."""
+    if not name or str(name).lower() in ("null", "none", ""):
+        return 0
+    return ITEM_NAME_TO_ID.get(str(name).lower().replace("_", " "), 0)
+
 # ---------------------------------------------------------------------------
 # Token / LLM setup — uses Copilot CLI as the AI provider
 # ---------------------------------------------------------------------------
 
-COPILOT_MODEL = "claude-sonnet-4.6"
+COPILOT_MODEL = "claude-opus-4.6"
 SESSION_FILE = os.path.join(os.path.dirname(__file__) or ".", ".copilot_session")
 
 class CopilotSession:
@@ -206,36 +238,55 @@ class CopilotSession:
             log.info("🔄 Session rotated (%s → %s) after %d calls",
                      old, self.session_id[:8], self._max_calls)
     
-    def call(self, prompt, timeout=30):
-        """Call Copilot CLI with session resume, return raw text. Thread-safe."""
+    def call(self, prompt, timeout=None, stateless=False, retries=2):
+        """Call Copilot CLI, return raw text. timeout=None means wait forever.
+        stateless=True: no --resume, safe for concurrent calls (used for dialogue batches).
+        Retries on empty response up to `retries` times."""
         import subprocess
         with self._lock:
             self._rotate_if_needed()
+            session_id = self.session_id
+            call_num = self._call_count + 1
+            self._call_count += 1
+        if stateless:
+            cmd = ["copilot", "--model", self.model, "-s", "-p", prompt]
+        else:
             cmd = ["copilot", "--model", self.model, "-s",
-                   "--resume", self.session_id, "-p", prompt]
+                   "--resume", session_id, "-p", prompt]
+
+        for attempt in range(1 + retries):
             try:
                 result = subprocess.run(
                     cmd, capture_output=True, text=True,
                     timeout=timeout, encoding="utf-8"
                 )
-                self._call_count += 1
                 out = result.stdout.strip() if result.stdout else None
-                log.debug("Copilot raw [%d]: %s", self._call_count,
-                          out[:500] if out else "(empty)")
-                return out
+                err = result.stderr.strip() if result.stderr else None
+                if attempt == 0:
+                    log.info("🤖 PROMPT [%d]: %s", call_num, prompt)
+                log.info("🤖 RESPONSE [%d]: %s", call_num, out or "(empty)")
+                if err:
+                    log.warning("🤖 STDERR [%d]: %s", call_num, err[:500])
+                if out:
+                    return out
+                if attempt < retries:
+                    log.info("🔁 Retry %d/%d for call %d (empty response)",
+                             attempt + 1, retries, call_num)
+                    time.sleep(2)
             except subprocess.TimeoutExpired:
-                log.warning("Copilot CLI timed out")
-                return None
+                log.warning("Copilot CLI timed out (call %d, attempt %d)", call_num, attempt)
             except Exception as e:
-                log.warning("Copilot CLI error: %s", e)
-                return None
+                log.warning("Copilot CLI error (attempt %d): %s", attempt, e)
+                if attempt < retries:
+                    time.sleep(2)
+        return None
     
     def init_session(self, system_context):
         """Send initial context to establish the session (skips if resuming)."""
         if self._initialized:
             log.info("Resuming existing session: %s", self.session_id[:8])
             return
-        self.call(system_context, timeout=45)
+        self.call(system_context)
         self._initialized = True
         log.info("Copilot session initialized: %s", self.session_id[:8])
 
@@ -320,7 +371,7 @@ Respond with ONLY valid JSON — no markdown, no explanation outside the JSON.
 JSON format:
 {{"line1": "<max 18 chars>", "line2": "<max 18 chars>"}}
 
-IMPORTANT: Use ONLY letters A-Z a-z, digits 0-9, and spaces. NO punctuation at all.
+IMPORTANT: Use ONLY letters A-Z a-z, digits 0-9, spaces, and ? ! . , ' - : & for punctuation. No other special chars.
 
 VIBE: {vibe}
 Rewrite dialogue to match this vibe while keeping the general meaning."""
@@ -332,6 +383,27 @@ class AIConfig:
         self.enabled = True
         self.vibe = vibe
 
+# Sprite ID → human-readable NPC type (from Crystal sprite_constants.asm)
+SPRITE_NAMES = {
+    0x01: "player (Chris)", 0x03: "boy", 0x04: "rival",
+    0x05: "professor", 0x06: "Red", 0x07: "Blue",
+    0x08: "Bill", 0x09: "elder", 0x0b: "Kurt",
+    0x0c: "mom", 0x0e: "Red's mom", 0x10: "Prof. Elm",
+    0x23: "Cool Trainer (M)", 0x24: "Cool Trainer (F)",
+    0x25: "Bug Catcher", 0x26: "twin", 0x27: "youngster",
+    0x28: "lass", 0x29: "teacher", 0x2a: "beauty",
+    0x2b: "nerd", 0x2c: "rocker", 0x2d: "Pokemon fan (M)",
+    0x2e: "Pokemon fan (F)", 0x2f: "gramps", 0x30: "granny",
+    0x31: "swimmer (M)", 0x32: "swimmer (F)",
+    0x35: "Team Rocket grunt", 0x36: "Team Rocket grunt (F)",
+    0x37: "nurse", 0x38: "receptionist", 0x39: "clerk",
+    0x3a: "fisher", 0x3b: "fishing guru", 0x3c: "scientist",
+    0x3d: "kimono girl", 0x3e: "sage", 0x40: "gentleman",
+    0x41: "black belt", 0x43: "officer", 0x46: "captain",
+    0x48: "gym guide", 0x49: "sailor", 0x4a: "biker",
+    0x4b: "pharmacist", 0x4d: "fairy", 0x60: "Kris (player F)",
+}
+
 class PokemonBattleState:
     """Extracts and represents battle state from game memory"""
     
@@ -342,20 +414,50 @@ class PokemonBattleState:
     PLAYER_POKEMON_ADDR = 0xC62C    # wBattleMonSpecies
     ENEMY_POKEMON_ADDR = 0xD206     # wEnemyMonSpecies
     ENEMY_MOVES_ADDR = 0xD208       # wEnemyMonMoves (4 bytes)
-    ENEMY_MOVE_NUM_ADDR = 0xC6E9    # wCurEnemyMoveNum (0-3, which move enemy uses)
+    ENEMY_MOVE_NUM_ADDR = 0xC6E9    # wCurEnemyMoveNum (0-3, which slot)
+    CUR_ENEMY_MOVE_ADDR = 0xC6E4    # wCurEnemyMove (the actual move ID)
     PLAYER_TURNS_ADDR = 0xC6DD      # wPlayerTurnsTaken
     TEMP_WILD_SPECIES_ADDR = 0xD22E # wTempWildMonSpecies
     ENEMY_LEVEL_ADDR = 0xD213       # wEnemyMonLevel
+    ENEMY_ITEM_ADDR = 0xD207        # wEnemyMonItem
+    ENEMY_DVS_ADDR = 0xD20C         # wEnemyMonDVs (2 bytes)
+    ENEMY_PP_ADDR = 0xD20E          # wEnemyMonPP (4 bytes)
+    ENEMY_MAXHP_ADDR = 0xD218       # wEnemyMonMaxHP (2 bytes, big-endian)
+    ENEMY_ATK_ADDR = 0xD21A         # wEnemyMonAttack
+    ENEMY_DEF_ADDR = 0xD21C         # wEnemyMonDefense
+    ENEMY_SPD_ADDR = 0xD21E         # wEnemyMonSpeed
+    ENEMY_SPATK_ADDR = 0xD220       # wEnemyMonSpclAtk
+    ENEMY_SPDEF_ADDR = 0xD222       # wEnemyMonSpclDef
     TILEMAP_ADDR = 0xC4A0           # wTilemap (20x18 tiles)
     TILEMAP_W = 20
     TILEMAP_H = 18
     # Party info
     PARTY_COUNT_ADDR = 0xDCD7       # Number of party Pokemon
     PARTY_SPECIES_ADDR = 0xDCD8     # Species list (6 bytes)
+    PARTY_MON1_ADDR = 0xDCDF        # wPartyMon1 struct base
+    PARTY_STRUCT_SIZE = 0x30        # 48 bytes per party mon
     PARTY1_LEVEL_ADDR = 0xDCFE      # Party mon 1 level
+    # Party struct offsets
+    MON_MOVES_OFF = 0x02            # 4 move IDs
+    MON_PP_OFF = 0x17               # 4 PP values
+    MON_LEVEL_OFF = 0x1F
+    MON_HP_OFF = 0x22               # 2 bytes big-endian
+    MON_MAXHP_OFF = 0x24            # 2 bytes big-endian
+    # Badges
+    JOHTO_BADGES_ADDR = 0xD857      # wJohtoBadges (bitfield)
     # Map location
     MAP_GROUP_ADDR = 0xDCB5         # wMapGroup
     MAP_NUMBER_ADDR = 0xDCB6        # wMapNumber
+    # Player coords
+    PLAYER_MAP_X_ADDR = 0xDCB8      # wXCoord
+    PLAYER_MAP_Y_ADDR = 0xDCB9      # wYCoord
+    # Object structs (NPCs) — offsets from constants/map_object_constants.asm
+    OBJECT_STRUCTS_ADDR = 0xC100    # wObjectStructs
+    OBJECT_STRUCT_SIZE = 0x28       # 40 bytes per object (OBJECT_LENGTH)
+    OBJECT_SPRITE_OFF = 0x00        # sprite/pic_num (OBJECT_SPRITE, 1 byte)
+    OBJECT_MAP_X_OFF = 0x10         # map tile X (OBJECT_MAP_X)
+    OBJECT_MAP_Y_OFF = 0x11         # map tile Y (OBJECT_MAP_Y)
+    NUM_OBJECTS = 13                # object 0=player, 1-12=NPCs (NUM_OBJECT_STRUCTS)
     
     def __init__(self, pyboy):
         self.pyboy = pyboy
@@ -392,9 +494,14 @@ class PokemonBattleState:
         return [self.pyboy.memory[self.ENEMY_MOVES_ADDR + i] for i in range(4)]
 
     def set_enemy_move(self, move_index):
-        """Write the AI's chosen move index to the enemy move selection"""
+        """Write the AI's chosen move to the enemy move selection.
+        Must write BOTH wCurEnemyMoveNum (slot) AND wCurEnemyMove (move ID),
+        because wild Pokemon skip AIChooseMove and pick randomly elsewhere."""
         if 0 <= move_index <= 3:
+            move_id = self.pyboy.memory[self.ENEMY_MOVES_ADDR + move_index]
             self.pyboy.memory[self.ENEMY_MOVE_NUM_ADDR] = move_index
+            if move_id != 0:
+                self.pyboy.memory[self.CUR_ENEMY_MOVE_ADDR] = move_id
 
     def get_battle_state(self):
         """Extract current battle state (from the enemy AI's perspective)"""
@@ -435,26 +542,144 @@ class PokemonBattleState:
         level = self.pyboy.memory[self.PARTY1_LEVEL_ADDR]
         return species, level
 
-    # Map group/number to area name (Crystal map constants)
+    def get_full_party_info(self):
+        """Get detailed party info string: species, level, HP, moves for each mon."""
+        count = self.pyboy.memory[self.PARTY_COUNT_ADDR]
+        party = []
+        for i in range(min(count, 6)):
+            sid = self.pyboy.memory[self.PARTY_SPECIES_ADDR + i]
+            if sid == 0 or sid == 0xFF:
+                continue
+            base = self.PARTY_MON1_ADDR + i * self.PARTY_STRUCT_SIZE
+            level = self.pyboy.memory[base + self.MON_LEVEL_OFF]
+            hp = (self.pyboy.memory[base + self.MON_HP_OFF] << 8) | self.pyboy.memory[base + self.MON_HP_OFF + 1]
+            max_hp = (self.pyboy.memory[base + self.MON_MAXHP_OFF] << 8) | self.pyboy.memory[base + self.MON_MAXHP_OFF + 1]
+            moves = []
+            for m in range(4):
+                mid = self.pyboy.memory[base + self.MON_MOVES_OFF + m]
+                if mid != 0:
+                    pp = self.pyboy.memory[base + self.MON_PP_OFF + m]
+                    moves.append(f"{move_name(mid)}({pp}pp)")
+            party.append(f"Lv{level} {pokemon_name(sid)} {hp}/{max_hp}HP [{', '.join(moves)}]")
+        return "; ".join(party) if party else "empty party"
+
+    def get_badge_count(self):
+        """Get number of Johto badges earned."""
+        badges = self.pyboy.memory[self.JOHTO_BADGES_ADDR]
+        return bin(badges).count('1')
+
+    def get_npc_info(self):
+        """Scan object structs and return list of NPC descriptions relative to player."""
+        # Read player position from object 0 struct (same coord system as NPCs)
+        player_base = self.OBJECT_STRUCTS_ADDR
+        px = self.pyboy.memory[player_base + self.OBJECT_MAP_X_OFF]
+        py = self.pyboy.memory[player_base + self.OBJECT_MAP_Y_OFF]
+        npcs = []
+        for i in range(1, self.NUM_OBJECTS):  # skip object 0 (player)
+            base = self.OBJECT_STRUCTS_ADDR + i * self.OBJECT_STRUCT_SIZE
+            sprite_id = self.pyboy.memory[base + self.OBJECT_SPRITE_OFF]
+            nx = self.pyboy.memory[base + self.OBJECT_MAP_X_OFF]
+            ny = self.pyboy.memory[base + self.OBJECT_MAP_Y_OFF]
+            # Skip empty/unloaded objects
+            if sprite_id == 0 or (nx == 0 and ny == 0) or nx == 0xFF or ny == 0xFF:
+                continue
+            npc_type = SPRITE_NAMES.get(sprite_id, f"person(#{sprite_id:02x})")
+            dx = (nx - px + 128) % 256 - 128
+            dy = (ny - py + 128) % 256 - 128
+            dist = abs(dx) + abs(dy)
+            # Skip if clearly stale data (shouldn't be >40 tiles in same map)
+            if dist > 40:
+                continue
+            npcs.append((dist, f"{npc_type} ({dx:+d},{dy:+d})"))
+        npcs.sort(key=lambda x: x[0])
+        return [desc for _, desc in npcs]
+
+
+    # Authoritative map names from pret/pokecrystal constants/map_constants.asm
     MAP_NAMES = {
-        (1,1): "Olivine City", (1,2): "Olivine Gym",
-        (2,1): "Mahogany Town", (2,2): "Mahogany Gym",
-        (3,1): "Route 29", (3,2): "Route 30", (3,3): "Route 31",
-        (3,4): "Route 32", (3,5): "Route 33", (3,6): "Route 34",
-        (3,7): "Route 35", (3,8): "Route 36", (3,9): "Route 37",
-        (3,10): "Route 38", (3,11): "Route 39", (3,12): "Route 40",
-        (3,13): "Route 41",
-        (4,1): "Route 42", (4,2): "Route 43", (4,3): "Route 44",
-        (4,4): "Route 45", (4,5): "Route 46",
-        (10,1): "Cherrygrove City",
-        (11,1): "Violet City", (11,2): "Violet Gym",
-        (12,1): "Azalea Town", (12,2): "Azalea Gym",
-        (13,1): "Goldenrod City", (13,2): "Goldenrod Gym",
-        (14,1): "Ecruteak City", (14,2): "Ecruteak Gym",
-        (24,1): "New Bark Town", (24,2): "Elm's Lab",
-        (24,4): "Player's House 1F", (24,5): "Player's House 2F",
-        (26,1): "Route 26", (26,2): "Route 27", (26,3): "Route 28",
-        (26,4): "Route 29", (26,5): "Route 30",
+        # Group 1 - OLIVINE
+        (1,2): "Olivine Gym", (1,8): "Olivine Mart",
+        (1,12): "Route 38", (1,13): "Route 39", (1,14): "Olivine City",
+        # Group 2 - MAHOGANY
+        (2,2): "Mahogany Gym", (2,5): "Route 42", (2,6): "Route 44",
+        (2,7): "Mahogany Town",
+        # Group 3 - DUNGEONS
+        (3,1): "Sprout Tower 1F", (3,2): "Sprout Tower 2F", (3,3): "Sprout Tower 3F",
+        (3,4): "Tin Tower 1F", (3,12): "Tin Tower 9F",
+        (3,13): "Burned Tower 1F", (3,14): "Burned Tower B1F",
+        (3,15): "National Park", (3,16): "National Park Bug Contest",
+        (3,22): "Ruins of Alph",
+        (3,37): "Union Cave 1F", (3,38): "Union Cave B1F", (3,39): "Union Cave B2F",
+        (3,40): "Slowpoke Well B1F", (3,41): "Slowpoke Well B2F",
+        (3,52): "Ilex Forest", (3,53): "Goldenrod Underground",
+        (3,57): "Mt Mortar", (3,61): "Ice Path 1F",
+        (3,74): "Silver Cave", (3,78): "Dark Cave",
+        (3,80): "Dragons Den", (3,83): "Tohjo Falls",
+        (3,84): "Digletts Cave", (3,85): "Mt Moon", (3,91): "Victory Road",
+        # Group 4 - ECRUTEAK
+        (4,5): "Dance Theater", (4,7): "Ecruteak Gym", (4,9): "Ecruteak City",
+        # Group 5 - BLACKTHORN
+        (5,1): "Blackthorn Gym", (5,8): "Route 45", (5,9): "Route 46",
+        (5,10): "Blackthorn City",
+        # Group 6 - CINNABAR
+        (6,5): "Route 19", (6,6): "Route 20", (6,7): "Route 21",
+        (6,8): "Cinnabar Island",
+        # Group 7 - CERULEAN
+        (7,6): "Cerulean Gym", (7,10): "Power Plant",
+        (7,12): "Route 4", (7,13): "Route 9", (7,14): "Route 10",
+        (7,15): "Route 24", (7,16): "Route 25", (7,17): "Cerulean City",
+        # Group 8 - AZALEA
+        (8,5): "Azalea Gym", (8,6): "Route 33", (8,7): "Azalea Town",
+        # Group 9 - LAKE OF RAGE
+        (9,5): "Route 43", (9,6): "Lake of Rage",
+        # Group 10 - VIOLET
+        (10,1): "Route 32", (10,2): "Route 35", (10,3): "Route 36",
+        (10,4): "Route 37", (10,5): "Violet City", (10,7): "Violet Gym",
+        # Group 11 - GOLDENROD
+        (11,1): "Route 34", (11,2): "Goldenrod City", (11,3): "Goldenrod Gym",
+        (11,19): "Goldenrod Game Corner", (11,24): "Day Care",
+        # Group 12 - VERMILION
+        (12,1): "Route 6", (12,2): "Route 11", (12,3): "Vermilion City",
+        (12,11): "Vermilion Gym",
+        # Group 13 - PALLET
+        (13,1): "Route 1", (13,2): "Pallet Town", (13,6): "Oaks Lab",
+        # Group 14 - PEWTER
+        (14,1): "Route 3", (14,2): "Pewter City", (14,4): "Pewter Gym",
+        # Group 15 - FAST SHIP
+        (15,1): "Olivine Port", (15,2): "Vermilion Port",
+        (15,3): "SS Aqua", (15,10): "Mt Moon Square",
+        # Group 16 - INDIGO PLATEAU
+        (16,1): "Route 23", (16,2): "Indigo Plateau",
+        (16,3): "Wills Room", (16,4): "Kogas Room",
+        (16,5): "Brunos Room", (16,6): "Karens Room",
+        (16,7): "Lances Room", (16,8): "Hall of Fame",
+        # Group 17 - FUCHSIA
+        (17,1): "Route 13", (17,2): "Route 14", (17,3): "Route 15",
+        (17,4): "Route 18", (17,5): "Fuchsia City", (17,8): "Fuchsia Gym",
+        # Group 18 - LAVENDER
+        (18,1): "Route 8", (18,2): "Route 12", (18,3): "Route 10 South",
+        (18,4): "Lavender Town",
+        # Group 19 - SILVER
+        (19,1): "Route 28", (19,2): "Silver Cave Outside",
+        # Group 21 - CELADON
+        (21,1): "Route 7", (21,2): "Route 16", (21,3): "Route 17",
+        (21,4): "Celadon City", (21,21): "Celadon Gym",
+        # Group 22 - CIANWOOD
+        (22,1): "Route 40", (22,2): "Route 41", (22,3): "Cianwood City",
+        (22,5): "Cianwood Gym",
+        # Group 23 - VIRIDIAN
+        (23,1): "Route 2", (23,2): "Route 22", (23,3): "Viridian City",
+        (23,4): "Viridian Gym",
+        # Group 24 - NEW BARK
+        (24,1): "Route 26", (24,2): "Route 27", (24,3): "Route 29",
+        (24,4): "New Bark Town", (24,5): "Elms Lab",
+        (24,6): "Players House 1F", (24,7): "Players House 2F",
+        (24,9): "Elms House", (24,13): "Route 29 Gate",
+        # Group 25 - SAFFRON
+        (25,1): "Route 5", (25,2): "Saffron City", (25,4): "Saffron Gym",
+        # Group 26 - CHERRYGROVE
+        (26,1): "Route 30", (26,2): "Route 31",
+        (26,3): "Cherrygrove City", (26,10): "Mr Pokemons House",
     }
 
     def get_location(self):
@@ -504,14 +729,12 @@ class PokemonBattleState:
         return "".join(self._TILE_TO_CHAR.get(t, "") for t in tiles).strip()
 
     def text_to_tiles(self, text, width=18):
-        """Encode text to tile IDs, padded to width. Only safe chars (A-Z, a-z, 0-9, space)."""
+        """Encode text to tile IDs, padded to width."""
         self._init_charmap()
         tiles = []
         for c in text[:width]:
-            if c.isalnum() or c == ' ':
-                tiles.append(self._CHAR_TO_TILE.get(c, 0x7F))
-            else:
-                tiles.append(0x7F)  # replace punctuation with space (not in all tilesets)
+            t = self._CHAR_TO_TILE.get(c)
+            tiles.append(t if t is not None else 0x7F)
         while len(tiles) < width:
             tiles.append(0x7F)  # pad with spaces
         return tiles
@@ -535,27 +758,33 @@ class PokemonBattleState:
         return (line1 + " " + line2).strip()
 
     def write_textbox(self, line1, line2=""):
-        """Write AI text to the text box area (cols 1-18, rows 14 and 16)"""
+        """Write AI text to the text box area (cols 1-18, rows 14 and 16).
+        Also clears rows 13 and 15 to prevent scroll-copy doubling."""
         tiles1 = self.text_to_tiles(line1, 18)
         tiles2 = self.text_to_tiles(line2, 18)
-        base1 = self.TILEMAP_ADDR + 14 * self.TILEMAP_W + 1
-        base2 = self.TILEMAP_ADDR + 16 * self.TILEMAP_W + 1
-        for i, t in enumerate(tiles1):
-            self.pyboy.memory[base1 + i] = t
-        for i, t in enumerate(tiles2):
-            self.pyboy.memory[base2 + i] = t
+        blank = [0x7F] * 18  # spaces
+        base13 = self.TILEMAP_ADDR + 13 * self.TILEMAP_W + 1
+        base14 = self.TILEMAP_ADDR + 14 * self.TILEMAP_W + 1
+        base15 = self.TILEMAP_ADDR + 15 * self.TILEMAP_W + 1
+        base16 = self.TILEMAP_ADDR + 16 * self.TILEMAP_W + 1
+        for i in range(18):
+            self.pyboy.memory[base13 + i] = blank[i]
+            self.pyboy.memory[base14 + i] = tiles1[i]
+            self.pyboy.memory[base15 + i] = blank[i]
+            self.pyboy.memory[base16 + i] = tiles2[i]
 
 class AIEmulator:
     """Main emulator with AI integration via Copilot CLI"""
     
-    def __init__(self, rom_path, ai_config=None):
+    def __init__(self, rom_path, ai_config=None, model=None):
         self.rom_path = rom_path
         self.ai_config = ai_config or AIConfig()
+        self.model = model or COPILOT_MODEL
         self.pyboy = None
         self.battle_state = None
-        self.copilot = CopilotSession()
+        self.copilot = CopilotSession(model=self.model)
         self.last_ai_call = 0
-        self.ai_call_cooldown = 3.0
+        self.ai_call_cooldown = 8.0  # seconds between battle AI calls — game needs time to execute moves
         self._ai_pending = False
         self._latest_decision = None
         self._current_battle_move = None  # Continuously written to wCurEnemyMoveNum
@@ -563,16 +792,34 @@ class AIEmulator:
         self._next_encounter = None          # {"species": int, "moves": [int,...]} or None
         self._encounter_pending = False      # True while AI call is in flight
         self._encounter_applied = False      # Set by hook callback → triggers next pre-fetch
-        self._pending_encounter_moves = None # Moves to write at battle start
-        # Text override system (blocking)
+        self._pending_encounter_data = None  # Full encounter data to write at battle start
+        # Text override system
         self._active_text_lines = None  # (line1, line2) to keep writing to tilemap
+        self._written_tiles_line1 = None  # tiles we wrote for page-change detection
+        self._page_change_cooldown = 0  # ticks to wait before detecting next page change
         self._was_textbox_open = False
         self._textbox_handled = False  # did we already handle this textbox?
-        # Async dialogue pre-cache (per-area batch)
-        self._dialogue_cache = []            # [(line1, line2), ...] pre-generated
-        self._dialogue_cache_pending = False # True while batch AI call in flight
-        self._last_map_key = None            # (group, number) for map change detection
-        self._last_map_change_time = 0       # cooldown to avoid spam during transitions
+        # Async dialogue pre-cache
+        self._dialogue_store = {}           # {(group,num): [(line1, line2, timestamp), ...]}
+        self._dialogue_pending = set()      # set of (group,num) currently being fetched
+        self._dialogue_cache_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "dialogue_cache.json")
+        self._load_dialogue_cache()
+        from concurrent.futures import ThreadPoolExecutor
+        self._prefetch_pool = ThreadPoolExecutor(max_workers=16, thread_name_prefix="prefetch")
+        # Battle priority gate: prefetch threads pause when battle AI needs the wire
+        self._battle_priority = threading.Event()
+        self._battle_priority.set()  # starts open (no battle)
+        self._last_map_key = None           # (group, number) for map change detection
+        self._last_map_change_time = 0      # cooldown to avoid spam during transitions
+        # Warp guard: prevents game scripts from warping player back to story locations
+        self._warp_guard_map = None         # (group, num) — set after state load
+        self._warp_guard_pos = None         # (x, y) — position to return to
+        self._warp_guard_grace = 0          # ticks to skip after a warp correction
+        self._MAP_STATUS_ADDR = 0xD4E1     # wMapStatus (verified)
+        # Game context log — significant events for AI prompt context
+        self._game_events = []              # last N events as short strings
+        self._MAX_EVENTS = 32
         # Stats
         self.stats = {
             "battles": 0, "ai_calls": 0, "ai_errors": 0,
@@ -580,10 +827,15 @@ class AIEmulator:
             "ticks": 0, "start_time": None,
             "dialogues_rewritten": 0,
         }
+        # Screenshots — rolling buffer of 1024 frames, named 0000.jpg..1023.jpg
+        self.SCREENSHOT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+        os.makedirs(self.SCREENSHOT_DIR, exist_ok=True)
+        self._screenshot_index = 0
+        self._SCREENSHOT_MAX = 1024
         
     def start(self):
         """Initialize emulator and Copilot session"""
-        log.info("AI provider: Copilot CLI (model: %s)", COPILOT_MODEL)
+        log.info("AI provider: Copilot CLI (model: %s)", self.model)
 
         log.info("Loading ROM: %s", self.rom_path)
         self.pyboy = PyBoy(self.rom_path, window="SDL2")
@@ -595,6 +847,40 @@ class AIEmulator:
             with open(state_file, "rb") as f:
                 self.pyboy.load_state(f)
             log.info("Loaded save state: %s", state_file)
+            # Warp guard: remember the map we loaded into so we can resist script warps
+            g = self.pyboy.memory[0xDCB5]
+            n = self.pyboy.memory[0xDCB6]
+            x = self.pyboy.memory[0xDCB8]
+            y = self.pyboy.memory[0xDCB7]
+            self._warp_guard_map = (g, n)
+            self._warp_guard_pos = (x, y)
+            log.info("Warp guard armed: map (%d,%d) pos (%d,%d)", g, n, x, y)
+            # Force a full map reload at runtime so VRAM/tilesets load correctly.
+            # Save states don't preserve VRAM rendering state reliably.
+            log.info("Forcing map reload for VRAM refresh...")
+            self.pyboy.memory[self._MAP_STATUS_ADDR] = 0  # MAP_STATUS_START
+            for _ in range(180):  # 3 seconds for map to fully load
+                self.pyboy.tick()
+            # Walk 1 step to kick the LCD rendering
+            self.pyboy.button_press('down')
+            for _ in range(12):
+                self.pyboy.tick()
+            self.pyboy.button_release('down')
+            for _ in range(60):
+                self.pyboy.tick()
+            # Verify we're still on the right map
+            g2 = self.pyboy.memory[0xDCB5]
+            n2 = self.pyboy.memory[0xDCB6]
+            if (g2, n2) != (g, n):
+                log.warning("Map changed during reload: (%d,%d) → (%d,%d), forcing back", g, n, g2, n2)
+                self.pyboy.memory[0xDCB5] = g
+                self.pyboy.memory[0xDCB6] = n
+                self.pyboy.memory[0xDCB8] = x
+                self.pyboy.memory[0xDCB7] = y
+                self.pyboy.memory[self._MAP_STATUS_ADDR] = 0
+                for _ in range(180):
+                    self.pyboy.tick()
+            log.info("Map reload complete: (%d,%d)", self.pyboy.memory[0xDCB5], self.pyboy.memory[0xDCB6])
         
         # Register ROM hook: intercept TryWildEncounter success return
         # Bank 10, Addr 0x60F6 = right after encounter species is finalized
@@ -608,13 +894,15 @@ class AIEmulator:
             f"Your vibe is: \"{vibe}\". "
             f"I will send you game events (text boxes, battles, encounters). "
             f"For EVERY request, respond with ONLY valid JSON — no markdown fences, no extra text. "
+            f"You may use web search for Smogon sets, type charts, or strategies when needed. "
+            f"Encounters can have ANY Gen 1-2 moves — unconventional and creative movesets encouraged. "
             f"TEXT DISPLAY RULES that apply to ALL dialogue line1 and line2 values: "
-            f"Each line is MAX 18 characters. Use ONLY the letters A to Z and a to z and digits 0 to 9 and the space character. "
-            f"Absolutely NO punctuation NO quotes NO apostrophes NO hyphens NO periods NO commas NO special characters. "
+            f"Each line is MAX 18 characters. Allowed chars: A-Z a-z 0-9 space and ? ! . , ' - : & only. "
+            f"No other special characters or quotes. "
             f"Fit complete words within the 18 char limit. "
             f"When I send textbox text, respond: {{\"line1\": \"<max 18 chars>\", \"line2\": \"<max 18 chars>\"}} "
             f"When I send battle state, respond: {{\"action\": \"move\", \"move_index\": <0-3>, \"reasoning\": \"...\"}} "
-            f"When I ask for an encounter, respond: {{\"species_id\": <1-251>, \"moves\": [\"Move1\", \"Move2\", \"Move3\", \"Move4\"], \"reasoning\": \"...\"}} "
+            f"When I ask for an encounter, respond: {{\"species_id\": <1-251>, \"level\": <1-100>, \"held_item\": <item name or null>, \"moves\": [\"Move1\", \"Move2\", \"Move3\", \"Move4\"], \"reasoning\": \"...\"}} "
             f"When I ask for a DIALOGUE BATCH, respond: {{\"dialogues\": [{{\"line1\": \"...\", \"line2\": \"...\"}}, ...]}} "
             f"Acknowledge with: {{\"status\": \"ready\"}}"
         )
@@ -623,7 +911,56 @@ class AIEmulator:
             # Encounter + dialogue pre-fetch triggered by map-change detector in run()
         
         log.info("Emulator started — vibe: \"%s\"", vibe)
+
+    def _tick_no_input(self):
+        """Tick the emulator while suppressing all player button input.
+        Zeroes Pokemon Crystal's joypad RAM vars AFTER each tick so the game
+        sees no buttons pressed on the next frame."""
+        alive = self.pyboy.tick()
+        self.stats["ticks"] += 1
+        # Zero Crystal's joypad state in HRAM so game logic sees no input
+        self.pyboy.memory[0xFFA4] = 0  # hJoypadDown (held buttons)
+        self.pyboy.memory[0xFFA5] = 0  # hJoypadPressed (new presses)
+        self.pyboy.memory[0xFFA7] = 0  # hJoyDown (game logic: held)
+        self.pyboy.memory[0xFFA8] = 0  # hJoyPressed (game logic: new press)
+        return alive
     
+    def _check_warp_guard(self):
+        """If game scripts warped us to a story location, force us back.
+        Allows legitimate warps to nearby/connected maps (buildings, routes)."""
+        if not self._warp_guard_map or self._warp_guard_grace > 0:
+            if self._warp_guard_grace > 0:
+                self._warp_guard_grace -= 1
+            return
+        # Don't interfere during battles
+        if self.battle_state and self.battle_state.is_in_battle():
+            return
+        g = self.pyboy.memory[0xDCB5]
+        n = self.pyboy.memory[0xDCB6]
+        if (g, n) == self._warp_guard_map or (g, n) == (0, 0):
+            return
+        # Block warps to story locations (New Bark area, Elm's Lab)
+        BLOCKED_MAPS = {
+            (24, 4),  # New Bark Town
+            (24, 5),  # Elms Lab
+            (24, 6),  # Player's House
+            (24, 9),  # Elm's House
+        }
+        if (g, n) not in BLOCKED_MAPS:
+            # Legitimate warp (player entered a building, route, etc.)
+            return
+        # We've been script-warped! Force back.
+        tg, tn = self._warp_guard_map
+        tx, ty = self._warp_guard_pos
+        log.info("🛡️ Warp guard: script sent us to (%d,%d), forcing back to (%d,%d) pos (%d,%d)",
+                 g, n, tg, tn, tx, ty)
+        self.pyboy.memory[0xDCB5] = tg
+        self.pyboy.memory[0xDCB6] = tn
+        self.pyboy.memory[0xDCB8] = tx
+        self.pyboy.memory[0xDCB7] = ty
+        self.pyboy.memory[self._MAP_STATUS_ADDR] = 0  # MAP_STATUS_START
+        self._warp_guard_grace = 120  # skip checks for ~2 seconds while map reloads
+
     def _is_valid_battle_state(self, battle_state):
         your_id = battle_state["your_pokemon"]["pokemon_id"]
         opp_id = battle_state["opponent"]["pokemon_id"]
@@ -631,7 +968,7 @@ class AIEmulator:
         opp_hp = battle_state["opponent"]["hp"]
         if not (1 <= your_id <= 251) or not (1 <= opp_id <= 251):
             return False
-        if your_hp == 0 and opp_hp == 0:
+        if your_hp == 0 or opp_hp == 0:
             return False
         return True
 
@@ -649,11 +986,13 @@ class AIEmulator:
             f"- Your moves: [{moves_str}]\n"
             f"- Opponent: {pokemon_name(opp['pokemon_id'])} (HP: {opp['hp']})\n"
             f"- Turn: {state['turn']}\n"
-            f"\nChoose which move to use."
+            f"\nChoose which move to use. Use web search for type matchups or strategies if needed. "
+            f"Respond with ONLY JSON: {{\"action\": \"move\", \"move_index\": <0-{len(moves)-1}>, \"reasoning\": \"...\"}}"
         )
 
     def call_ai(self, battle_state):
-        """Kick off a background battle AI call (non-blocking)"""
+        """Blocking battle AI call — freezes game while AI thinks.
+        Player input is suppressed; game resumes when AI responds."""
         if not self.ai_config.enabled or self._ai_pending:
             return
         
@@ -664,7 +1003,6 @@ class AIEmulator:
         if not self._is_valid_battle_state(battle_state):
             return
 
-        self.last_ai_call = current_time
         self._ai_pending = True
         self.stats["ai_calls"] += 1
         call_num = self.stats["ai_calls"]
@@ -680,11 +1018,16 @@ class AIEmulator:
         log.info("  Opponent: %s (HP: %d)",
                  pokemon_name(opp["pokemon_id"]), opp["hp"])
 
+        result_box = [None]
+        result_ready = threading.Event()
+        self._battle_priority.clear()  # pause prefetch threads
+
         def _do_call():
             try:
+                ctx = self._get_context_str()
                 prompt = self._build_prompt(battle_state)
                 t0 = time.perf_counter()
-                raw = self.copilot.call(f"BATTLE: {prompt}")
+                raw = self.copilot.call(f"BATTLE: {ctx} {prompt}")
                 elapsed_ms = (time.perf_counter() - t0) * 1000
                 self.stats["total_api_ms"] += elapsed_ms
 
@@ -692,23 +1035,48 @@ class AIEmulator:
                 if not decision:
                     self.stats["ai_errors"] += 1
                     log.warning("  Bad response from AI: %s", raw)
-                    self._latest_decision = {"action": "move", "move_index": 0,
-                                             "reasoning": "fallback: bad response"}
+                    result_box[0] = {"action": "move", "move_index": 0,
+                                     "reasoning": "fallback: bad response"}
                 else:
                     mi = decision.get("move_index", 0)
                     chosen = move_name(moves[mi]) if mi < len(moves) else f"slot {mi}"
                     reason = decision.get("reasoning", "")
                     log.info("  ⚡ AI chose: %s (slot %d) in %.0fms", chosen, mi, elapsed_ms)
                     log.info("  💭 Reasoning: %s", reason)
-                    self._latest_decision = decision
+                    ename = pokemon_name(your["pokemon_id"])
+                    self._log_event(f"Enemy {ename} used {chosen}")
+                    result_box[0] = decision
 
             except Exception as e:
                 self.stats["ai_errors"] += 1
                 log.exception("  AI call failed: %s", e)
             finally:
                 self._ai_pending = False
+                self._battle_priority.set()  # resume prefetch threads
+                result_ready.set()
 
         threading.Thread(target=_do_call, daemon=True).start()
+
+        # Block: keep ticking (window alive) with input suppressed until AI responds
+        # Show a spinning indicator in the top-right corner (row 0, col 19)
+        indicator_addr = self.battle_state.TILEMAP_ADDR + 19  # row 0, col 19
+        saved_tile = self.pyboy.memory[indicator_addr]
+        spin_tiles = [0xF2, 0xE3, 0xF3, 0xE8]
+        spin_frame = 0
+        while not result_ready.is_set():
+            if not self._tick_no_input():
+                return
+            spin_frame += 1
+            self.pyboy.memory[indicator_addr] = spin_tiles[(spin_frame // 8) % len(spin_tiles)]
+
+        # Restore original tile
+        self.pyboy.memory[indicator_addr] = saved_tile
+
+        # Set cooldown AFTER response
+        self.last_ai_call = time.time()
+
+        if result_box[0]:
+            self._latest_decision = result_box[0]
     
     def apply_ai_decision(self, decision):
         """Write enemy move choice to game memory"""
@@ -722,18 +1090,62 @@ class AIEmulator:
             log.debug("Ignoring non-move action: %s", action)
 
     def _on_battle_start(self):
-        """Called when a battle begins — write custom moves if we have them"""
-        if self._pending_encounter_moves:
-            moves = self._pending_encounter_moves[:4]
+        """Called when a battle begins — apply AI-chosen encounter data."""
+        enc = getattr(self, '_pending_encounter_data', None)
+        if not enc:
+            return
+
+        bs = self.battle_state
+        mem = self.pyboy.memory
+
+        # --- Moves ---
+        moves = enc.get("moves", [])[:4]
+        if moves:
             for i, mid in enumerate(moves):
-                self.pyboy.memory[0xD208 + i] = mid   # wEnemyMonMoves
-                self.pyboy.memory[0xD20E + i] = 35    # wEnemyMonPP (safe default)
-            # Zero out unused slots
+                mem[bs.ENEMY_MOVES_ADDR + i] = mid
+                mem[bs.ENEMY_PP_ADDR + i] = 63  # max safe PP
             for i in range(len(moves), 4):
-                self.pyboy.memory[0xD208 + i] = 0
-                self.pyboy.memory[0xD20E + i] = 0
+                mem[bs.ENEMY_MOVES_ADDR + i] = 0
+                mem[bs.ENEMY_PP_ADDR + i] = 0
             log.info("  Custom moves: %s", [move_name(m) for m in moves])
-            self._pending_encounter_moves = None
+
+        # --- Level ---
+        new_level = enc.get("level")
+        if new_level and 1 <= new_level <= 100:
+            old_level = mem[bs.ENEMY_LEVEL_ADDR] or 1
+            mem[bs.ENEMY_LEVEL_ADDR] = new_level
+            log.info("  Level: %d → %d", old_level, new_level)
+
+            # Rescale stats proportionally to new level
+            if old_level != new_level:
+                ratio = new_level / old_level
+                # Rescale each 2-byte big-endian stat
+                for addr in [bs.ENEMY_ATK_ADDR, bs.ENEMY_DEF_ADDR,
+                             bs.ENEMY_SPD_ADDR, bs.ENEMY_SPATK_ADDR,
+                             bs.ENEMY_SPDEF_ADDR]:
+                    old_val = (mem[addr] << 8) | mem[addr + 1]
+                    new_val = max(1, min(999, int(old_val * ratio)))
+                    mem[addr] = (new_val >> 8) & 0xFF
+                    mem[addr + 1] = new_val & 0xFF
+                # Rescale MaxHP and set CurHP = MaxHP (full health)
+                old_maxhp = (mem[bs.ENEMY_MAXHP_ADDR] << 8) | mem[bs.ENEMY_MAXHP_ADDR + 1]
+                new_maxhp = max(1, min(999, int(old_maxhp * ratio)))
+                for addr in [bs.ENEMY_MAXHP_ADDR, bs.ENEMY_HP_ADDR]:
+                    mem[addr] = (new_maxhp >> 8) & 0xFF
+                    mem[addr + 1] = new_maxhp & 0xFF
+
+        # --- DVs (IVs) — max out: 0xFF 0xFF = 15/15/15/15 ---
+        mem[bs.ENEMY_DVS_ADDR] = 0xFF      # Atk=15, Def=15
+        mem[bs.ENEMY_DVS_ADDR + 1] = 0xFF  # Spd=15, Spc=15
+
+        # --- Held Item ---
+        item_name = enc.get("held_item")
+        item_id = item_id_from_name(item_name)
+        if item_id:
+            mem[bs.ENEMY_ITEM_ADDR] = item_id
+            log.info("  Held item: %s (0x%02X)", item_name, item_id)
+
+        self._pending_encounter_data = None
 
     # --- Encounter Override (ROM Hook) ---
 
@@ -746,7 +1158,7 @@ class AIEmulator:
             enc = emu._next_encounter
             species = enc["species"]
             emu.pyboy.memory[0xD22E] = species  # wTempWildMonSpecies
-            emu._pending_encounter_moves = enc.get("moves")
+            emu._pending_encounter_data = enc  # store full encounter data for battle start
             log.info("🎯 Encounter override: %s (ID: %d)", pokemon_name(species), species)
             emu._next_encounter = None
             emu._encounter_applied = True
@@ -764,11 +1176,14 @@ class AIEmulator:
                 party_species, lead_level = self.battle_state.get_party_info()
                 location = self.battle_state.get_location()
                 party_str = ", ".join(pokemon_name(s) for s in party_species)
+                ctx = self._get_context_str()
                 prompt = (
-                    f"ENCOUNTER: Player at {location} with [{party_str}] "
-                    f"(lead level: {lead_level}). "
-                    f"Pick a wild Pokemon and 4 moves it should know. "
-                    f"JSON: {{\"species_id\": <1-251>, \"moves\": "
+                    f"ENCOUNTER: {ctx} "
+                    f"Pick a wild Pokemon with level, held item, and 4 moves. "
+                    f"Moves can be ANY move from any gen 1-2 Pokemon — unconventional and "
+                    f"creative movesets are encouraged. Use web search if needed for optimal sets. "
+                    f"Respond with ONLY JSON: {{\"species_id\": <1-251>, \"level\": <1-100>, "
+                    f"\"held_item\": <item name or null>, \"moves\": "
                     f"[\"MoveName1\", \"MoveName2\", \"MoveName3\", \"MoveName4\"], "
                     f"\"reasoning\": \"...\"}}"
                 )
@@ -787,9 +1202,15 @@ class AIEmulator:
                                 move_ids.append(33)  # Tackle fallback
                         if not move_ids:
                             move_ids = [33]  # at least Tackle
-                        self._next_encounter = {"species": sid, "moves": move_ids}
-                        log.info("🎲 Next encounter: %s — moves: %s",
-                                 pokemon_name(sid),
+                        self._next_encounter = {
+                            "species": sid, "moves": move_ids,
+                            "level": int(result.get("level", 0)) or None,
+                            "held_item": result.get("held_item"),
+                        }
+                        lvl_str = f" Lv{self._next_encounter['level']}" if self._next_encounter['level'] else ""
+                        item_str = f" @{self._next_encounter['held_item']}" if self._next_encounter['held_item'] else ""
+                        log.info("🎲 Next encounter: %s%s%s — moves: %s",
+                                 pokemon_name(sid), lvl_str, item_str,
                                  [move_name(m) for m in move_ids])
                     else:
                         log.warning("AI returned invalid species_id: %d", sid)
@@ -802,67 +1223,374 @@ class AIEmulator:
 
         threading.Thread(target=_do_fetch, daemon=True).start()
 
-    # --- Async Dialogue Pre-Cache ---
+    # --- Async Dialogue Pre-Cache (per-area with look-ahead) ---
 
-    def _prefetch_area_dialogue(self):
-        """Pre-generate a batch of NPC dialogues for the current area (async)."""
-        if self._dialogue_cache_pending or not self.ai_config.enabled:
+    # Adjacency graph: map keys that connect to each other.
+
+    # Comprehensive Johto+Kanto adjacency graph.
+    # Used by _prefetch_adjacent_areas for BFS-based prefetch of all reachable areas.
+    ADJACENT_MAPS = {
+        # ── NEW BARK / ROUTE 29 ──────────────────────────────────────────────
+        (24,4):  [(24,3),(24,5),(24,6),(24,9),(24,2)],   # New Bark → R29, Elm's Lab, houses, R27
+        (24,3):  [(24,4),(24,13),(26,3)],                # Route 29 → New Bark, gate, Cherrygrove
+        (24,5):  [(24,4)],                               # Elm's Lab
+        (24,6):  [(24,4)],                               # Player's House
+        (24,9):  [(24,4)],                               # Elm's House
+        (24,13): [(24,3),(5,9)],                         # Route 29 Gate → R29, R46
+        # ── CHERRYGROVE / ROUTE 30-31 ────────────────────────────────────────
+        (26,3):  [(24,3),(26,1)],                        # Cherrygrove → R29, R30
+        (26,1):  [(26,3),(26,2),(26,10)],                # Route 30 → Cherrygrove, R31, Mr.Pokemon
+        (26,10): [(26,1)],                               # Mr Pokemon's House
+        (26,2):  [(26,1),(10,5),(3,78)],                 # Route 31 → R30, Violet, Dark Cave
+        # ── VIOLET CITY ──────────────────────────────────────────────────────
+        (10,5):  [(26,2),(10,1),(10,2),(10,7),(3,1)],   # Violet → R31, R32, R35, Gym, Sprout
+        (10,7):  [(10,5)],                               # Violet Gym
+        (3,1):   [(10,5),(3,2)],                         # Sprout Tower 1F
+        (3,2):   [(3,1),(3,3)],                          # Sprout Tower 2F
+        (3,3):   [(3,2)],                                # Sprout Tower 3F
+        (3,78):  [(26,2)],                               # Dark Cave
+        # ── ROUTE 32 / UNION CAVE / AZALEA ───────────────────────────────────
+        (10,1):  [(10,5),(3,37),(3,22)],                 # Route 32 → Violet, Union Cave, Ruins
+        (3,37):  [(10,1),(8,6),(3,38)],                  # Union Cave 1F
+        (3,38):  [(3,37),(3,39)],                        # Union Cave B1F
+        (3,39):  [(3,38)],                               # Union Cave B2F
+        (8,6):   [(3,37),(8,7)],                         # Route 33 → Union Cave, Azalea
+        (8,7):   [(8,6),(8,5),(3,40),(3,52)],            # Azalea → R33, Gym, Slowpoke Well, Ilex
+        (8,5):   [(8,7)],                                # Azalea Gym
+        (3,40):  [(8,7),(3,41)],                         # Slowpoke Well B1F
+        (3,41):  [(3,40)],                               # Slowpoke Well B2F
+        # ── ILEX FOREST / ROUTE 34 / GOLDENROD ───────────────────────────────
+        (3,52):  [(8,7),(11,1)],                         # Ilex Forest
+        (11,1):  [(3,52),(11,2),(11,24)],                # Route 34 → Ilex, Goldenrod, Day Care
+        (11,24): [(11,1)],                               # Day Care
+        (11,2):  [(11,1),(10,2),(11,3),(11,19),(3,53)],  # Goldenrod → R34, R35, Gym, GC, Under
+        (11,3):  [(11,2)],                               # Goldenrod Gym
+        (11,19): [(11,2)],                               # Game Corner
+        (3,53):  [(11,2)],                               # Goldenrod Underground
+        # ── ROUTE 35 / NAT PARK / ROUTE 36 / RUINS ───────────────────────────
+        (10,2):  [(10,5),(11,2),(10,3),(3,15)],          # Route 35 → Violet, Goldenrod, R36, Park
+        (3,15):  [(10,2),(10,3),(3,16)],                 # National Park
+        (3,16):  [(3,15)],                               # Bug Contest
+        (10,3):  [(10,2),(10,4),(3,22),(3,15)],          # Route 36 → R35, R37, Ruins, Park
+        (3,22):  [(10,3),(10,1)],                        # Ruins of Alph → R36, R32
+        # ── ROUTE 37 / ECRUTEAK ───────────────────────────────────────────────
+        (10,4):  [(10,3),(4,9)],                         # Route 37 → R36, Ecruteak
+        (4,9):   [(10,4),(1,12),(2,5),(3,13),(4,5),(4,7),(3,4)],  # Ecruteak
+        (4,5):   [(4,9)],                                # Dance Theater
+        (4,7):   [(4,9)],                                # Ecruteak Gym
+        (3,13):  [(4,9),(3,14)],                         # Burned Tower 1F
+        (3,14):  [(3,13)],                               # Burned Tower B1F
+        (3,4):   [(4,9),(3,12)],                         # Tin Tower 1F
+        (3,12):  [(3,4)],                                # Tin Tower 9F
+        # ── ROUTE 38-39 / OLIVINE ─────────────────────────────────────────────
+        (1,12):  [(4,9),(1,14)],                         # Route 38 → Ecruteak, Olivine
+        (1,13):  [(1,14)],                               # Route 39 → Olivine
+        (1,14):  [(1,12),(1,13),(1,2),(1,8),(22,1),(15,1)],  # Olivine City
+        (1,2):   [(1,14)],                               # Olivine Gym
+        (1,8):   [(1,14)],                               # Olivine Mart
+        (15,1):  [(1,14),(15,3)],                        # Olivine Port → SS Aqua
+        (15,3):  [(15,1),(15,2)],                        # SS Aqua
+        (15,2):  [(15,3),(12,3)],                        # Vermilion Port
+        # ── ROUTE 40-41 / CIANWOOD ────────────────────────────────────────────
+        (22,1):  [(1,14),(22,2)],                        # Route 40 → Olivine, R41
+        (22,2):  [(22,1),(22,3)],                        # Route 41 → R40, Cianwood
+        (22,3):  [(22,2),(22,5)],                        # Cianwood City
+        (22,5):  [(22,3)],                               # Cianwood Gym
+        # ── ROUTE 42 / MAHOGANY / LAKE OF RAGE ───────────────────────────────
+        (2,5):   [(4,9),(2,7),(3,57)],                   # Route 42 → Ecruteak, Mahogany, MtMortar
+        (3,57):  [(2,5)],                                # Mt Mortar
+        (2,7):   [(2,5),(2,6),(9,5),(2,2)],              # Mahogany → R42, R44, R43, Gym
+        (2,2):   [(2,7)],                                # Mahogany Gym
+        (9,5):   [(2,7),(9,6)],                          # Route 43 → Mahogany, Lake
+        (9,6):   [(9,5)],                                # Lake of Rage
+        (2,6):   [(2,7),(3,61)],                         # Route 44 → Mahogany, Ice Path
+        (3,61):  [(2,6),(5,10)],                         # Ice Path
+        # ── BLACKTHORN ────────────────────────────────────────────────────────
+        (5,10):  [(3,61),(5,8),(5,1),(3,80)],            # Blackthorn → Ice Path, R45, Gym, Den
+        (5,1):   [(5,10)],                               # Blackthorn Gym
+        (3,80):  [(5,10)],                               # Dragon's Den
+        (5,8):   [(5,10),(5,9)],                         # Route 45 → Blackthorn, R46
+        (5,9):   [(5,8),(24,13)],                        # Route 46 → R45, R29 Gate
+        # ── ROUTE 26-27 / TOHJO / SILVER CAVE ────────────────────────────────
+        (24,2):  [(24,4),(3,83),(24,1)],                 # Route 27 → New Bark, Tohjo, R26
+        (3,83):  [(24,2),(24,1)],                        # Tohjo Falls
+        (24,1):  [(24,2),(3,83),(3,91),(19,2)],          # Route 26 → R27, Tohjo, Victory Rd, Silver
+        (19,2):  [(24,1),(19,1),(3,74)],                 # Silver Cave Outside
+        (19,1):  [(19,2)],                               # Route 28
+        (3,74):  [(19,2)],                               # Silver Cave
+        # ── INDIGO PLATEAU / ELITE FOUR ───────────────────────────────────────
+        (3,91):  [(24,1),(16,1),(16,2)],                 # Victory Road
+        (16,1):  [(3,91),(16,2)],                        # Route 23
+        (16,2):  [(3,91),(16,1),(16,3)],                 # Indigo Plateau
+        (16,3):  [(16,2),(16,4)],                        # Will's Room
+        (16,4):  [(16,3),(16,5)],                        # Koga's Room
+        (16,5):  [(16,4),(16,6)],                        # Bruno's Room
+        (16,6):  [(16,5),(16,7)],                        # Karen's Room
+        (16,7):  [(16,6),(16,8)],                        # Lance's Room
+        (16,8):  [(16,7)],                               # Hall of Fame
+        # ── KANTO: VERMILION ──────────────────────────────────────────────────
+        (12,3):  [(15,2),(12,1),(12,2),(12,11)],         # Vermilion City
+        (12,11): [(12,3)],                               # Vermilion Gym
+        (12,1):  [(12,3)],                               # Route 6
+        (12,2):  [(12,3)],                               # Route 11
+        # ── KANTO: PALLET / CINNABAR ──────────────────────────────────────────
+        (13,1):  [(13,2)],                               # Route 1
+        (13,2):  [(13,1),(13,6)],                        # Pallet Town
+        (13,6):  [(13,2)],                               # Oak's Lab
+        (6,8):   [(6,5),(6,6),(6,7)],                    # Cinnabar Island
+        (6,5):   [(6,8)],                                # Route 19
+        (6,6):   [(6,8)],                                # Route 20
+        (6,7):   [(6,8)],                                # Route 21
+        # ── KANTO: PEWTER ─────────────────────────────────────────────────────
+        (14,1):  [(14,2),(15,10),(3,85)],                # Route 3
+        (14,2):  [(14,1),(14,4)],                        # Pewter City
+        (14,4):  [(14,2)],                               # Pewter Gym
+        (15,10): [(14,1)],                               # Mt Moon Square
+        (3,85):  [(14,1)],                               # Mt Moon
+        # ── KANTO: CERULEAN ───────────────────────────────────────────────────
+        (7,17):  [(7,6),(7,12),(7,13),(7,14),(7,15),(7,16)],  # Cerulean City
+        (7,6):   [(7,17)],                               # Cerulean Gym
+        (7,12):  [(7,17)],                               # Route 4
+        (7,13):  [(7,17)],                               # Route 9
+        (7,14):  [(7,17),(7,10)],                        # Route 10
+        (7,15):  [(7,17)],                               # Route 24
+        (7,16):  [(7,17)],                               # Route 25
+        (7,10):  [(7,14)],                               # Power Plant
+        # ── KANTO: LAVENDER ───────────────────────────────────────────────────
+        (18,4):  [(18,1),(18,2),(18,3)],                 # Lavender Town
+        (18,1):  [(18,4)],                               # Route 8
+        (18,2):  [(18,4)],                               # Route 12
+        (18,3):  [(18,4)],                               # Route 10 South
+        # ── KANTO: CELADON ────────────────────────────────────────────────────
+        (21,4):  [(21,1),(21,2),(21,3),(21,21)],         # Celadon City
+        (21,21): [(21,4)],                               # Celadon Gym
+        (21,1):  [(21,4)],                               # Route 7
+        (21,2):  [(21,4)],                               # Route 16
+        (21,3):  [(21,4)],                               # Route 17
+        # ── KANTO: SAFFRON ────────────────────────────────────────────────────
+        (25,2):  [(25,1),(25,4)],                        # Saffron City
+        (25,4):  [(25,2)],                               # Saffron Gym
+        (25,1):  [(25,2)],                               # Route 5
+        # ── KANTO: FUCHSIA ────────────────────────────────────────────────────
+        (17,5):  [(17,1),(17,2),(17,3),(17,4),(17,8)],   # Fuchsia City
+        (17,8):  [(17,5)],                               # Fuchsia Gym
+        (17,1):  [(17,5)],                               # Route 13
+        (17,2):  [(17,5)],                               # Route 14
+        (17,3):  [(17,5)],                               # Route 15
+        (17,4):  [(17,5)],                               # Route 18
+        # ── KANTO: VIRIDIAN ───────────────────────────────────────────────────
+        (23,3):  [(23,1),(23,2),(23,4)],                 # Viridian City
+        (23,4):  [(23,3)],                               # Viridian Gym
+        (23,1):  [(23,3)],                               # Route 2
+        (23,2):  [(23,3)],                               # Route 22
+        # ── MISC ──────────────────────────────────────────────────────────────
+        (3,84):  [],                                     # Diglett's Cave
+    }
+
+    def _bfs_distance(self, from_key, to_key):
+        """BFS hop distance between two map keys. Returns None if unreachable."""
+        if from_key == to_key:
+            return 0
+        from collections import deque
+        visited = {from_key}
+        queue = deque([(from_key, 0)])
+        while queue:
+            key, dist = queue.popleft()
+            for nb in self.ADJACENT_MAPS.get(key, []):
+                if nb == to_key:
+                    return dist + 1
+                if nb not in visited:
+                    visited.add(nb)
+                    queue.append((nb, dist + 1))
+        return None
+
+    def _ttl_for_area(self, map_key):
+        """Adaptive cache TTL in seconds.
+        - Current area: 20 min (refreshed on entry anyway)
+        - 1 hop away: 45 min
+        - 2 hops: 1.5 hours
+        - 3+ hops: 3 hours
+        - Unreachable: 4 hours
+        Far areas rarely need refreshing; nearby areas stay fresh via map-entry refresh."""
+        if not self._last_map_key:
+            return 14400  # 4 hours fallback
+        dist = self._bfs_distance(self._last_map_key, map_key)
+        if dist is None:
+            return 14400  # 4 hours for unreachable
+        if dist == 0:
+            return 1200   # 20 min for current area
+        if dist == 1:
+            return 2700   # 45 min
+        if dist == 2:
+            return 5400   # 1.5 hours
+        return 10800      # 3 hours for 3+ hops
+
+    def _prefetch_area_dialogue(self, map_key, location_name=None, include_npcs=False):
+        """Pre-generate a batch of NPC dialogues for a specific area (async).
+        Skips if already cached or fetch in-flight for this map_key."""
+        if not self.ai_config.enabled:
             return
-        self._dialogue_cache_pending = True
-        location = self.battle_state.get_location()
+        if map_key in self._dialogue_store and len(self._dialogue_store[map_key]) > 0:
+            # TTL scales with distance: nearby areas expire faster
+            ttl = self._ttl_for_area(map_key)
+            now = time.time()
+            fresh = [e for e in self._dialogue_store[map_key] if now - e[2] < ttl]
+            if fresh:
+                self._dialogue_store[map_key] = fresh
+                return  # still have fresh cached lines
+        if map_key in self._dialogue_pending:
+            return  # already fetching
+        self._dialogue_pending.add(map_key)
+        location = location_name or self.battle_state.MAP_NAMES.get(map_key, f"Area {map_key[0]}-{map_key[1]}")
+        context = self._get_context_str()
 
         def _do_fetch():
             try:
+                # Wait if battle AI has priority on the wire
+                self._battle_priority.wait()
+                # Delay NPC scan slightly so map objects have time to load
+                npc_line = ""
+                if include_npcs:
+                    import time as _t; _t.sleep(0.5)
+                    npcs = self.battle_state.get_npc_info()
+                    if npcs:
+                        npc_line = f"NPCs in area: {'; '.join(npcs[:8])}. "
                 prompt = (
                     f"DIALOGUE BATCH for {location}. "
-                    f"Generate 8 funny NPC dialogues for this area. "
+                    f"VIBE: {self.ai_config.vibe}. "
+                    f"Context: {context} "
+                    f"{npc_line}"
+                    f"Game: Pokemon Crystal Johto region. "
+                    f"Generate 8 NPC dialogues matching the VIBE, one per NPC where possible, tailored to their type and position. "
+                    f"Include references to the area, nearby landmarks, and Pokemon. "
                     f"STRICT: each line1 and line2 MUST be 18 chars or fewer. "
-                    f"ONLY letters A Z a z digits 0 9 and spaces. NO punctuation at all. "
-                    f"JSON: {{\"dialogues\": [{{\"line1\": \"...\", \"line2\": \"...\"}}, ...]}}"
+                    f"Allowed: A-Z a-z 0-9 space ? ! . , ' - : & only. "
+                    f"Respond with ONLY JSON: {{\"dialogues\": [{{\"line1\": \"...\", \"line2\": \"...\"}}, ...]}}"
                 )
-                raw = self.copilot.call(prompt, timeout=45)
+                raw = self.copilot.call(prompt, stateless=True)
                 result = parse_json_response(raw, expected_key="dialogues")
                 if result and "dialogues" in result:
                     import re
+                    now = time.time()
                     batch = []
                     for d in result["dialogues"]:
-                        l1 = re.sub(r'[^A-Za-z0-9 ]', '',
+                        l1 = re.sub(r"[^A-Za-z0-9 ?!.,'\-:&]", '',
                                     str(d.get("line1", "")))[:18]
-                        l2 = re.sub(r'[^A-Za-z0-9 ]', '',
+                        l2 = re.sub(r"[^A-Za-z0-9 ?!.,'\-:&]", '',
                                     str(d.get("line2", "")))[:18]
                         if l1 or l2:
-                            batch.append((l1, l2))
-                    self._dialogue_cache = batch
+                            batch.append((l1, l2, now))
+                    self._dialogue_store[map_key] = batch
                     log.info("📝 Cached %d dialogues for %s", len(batch), location)
+                    self._save_dialogue_cache()
                 else:
-                    log.warning("Dialogue batch bad response: %s",
-                                raw[:120] if raw else None)
+                    log.warning("Dialogue batch bad response for %s: %s",
+                                location, raw[:120] if raw else None)
             except Exception as e:
-                log.warning("Dialogue batch error: %s", e)
+                log.warning("Dialogue batch error for %s: %s", location, e)
             finally:
-                self._dialogue_cache_pending = False
+                self._dialogue_pending.discard(map_key)
 
-        threading.Thread(target=_do_fetch, daemon=True).start()
+        self._prefetch_pool.submit(_do_fetch)
+
+    def _prefetch_adjacent_areas(self, current_map_key):
+        """BFS through the full map graph from current position.
+        Prefetches ALL reachable areas, closest first, so dialogue is ready before the player arrives."""
+        from collections import deque
+        visited = {current_map_key}
+        queue = deque([(current_map_key, 0)])
+        prefetch_order = []
+        while queue:
+            key, dist = queue.popleft()
+            for nb in self.ADJACENT_MAPS.get(key, []):
+                if nb not in visited:
+                    visited.add(nb)
+                    prefetch_order.append((dist + 1, nb))
+                    queue.append((nb, dist + 1))
+        for _, key in prefetch_order:  # already in BFS (closest-first) order
+            self._prefetch_area_dialogue(key)
+
+    def _get_dialogue_cache(self):
+        """Get the dialogue cache list for the current map, filtering out stale lines."""
+        if self._last_map_key and self._last_map_key in self._dialogue_store:
+            ttl = self._ttl_for_area(self._last_map_key)  # current area = 120s
+            now = time.time()
+            fresh = [entry for entry in self._dialogue_store[self._last_map_key]
+                     if now - entry[2] < ttl]
+            self._dialogue_store[self._last_map_key] = fresh
+            return fresh
+        return []
+
+    def _log_event(self, event):
+        """Record a short game event for AI context."""
+        self._game_events.append(event)
+        if len(self._game_events) > self._MAX_EVENTS:
+            self._game_events = self._game_events[-self._MAX_EVENTS:]
+
+    def _get_context_str(self):
+        """Build a context string with location, full party stats, badges, and game history."""
+        location = self.battle_state.get_location()
+        party_str = self.battle_state.get_full_party_info()
+        badges = self.battle_state.get_badge_count()
+        ctx = f"Player at {location}, {badges} badges. Party: {party_str}."
+        if self._game_events:
+            ctx += " Story so far: " + "; ".join(self._game_events[-12:]) + "."
+        return ctx
 
     # --- Text Override ---
 
-    def _handle_textbox(self):
+    def _handle_textbox(self, in_battle=False):
         """Overworld: use pre-cached dialogue (instant). Battle: blocking AI rewrite.
-        
-        Every tick while textbox is open, keep overwriting tilemap with our text.
-        """
+        Detects multi-page text: when game clears textbox for next paragraph, applies next cached dialogue."""
         is_open = self.battle_state.is_textbox_open()
         
         # Textbox just closed — clear override
         if not is_open:
             if self._was_textbox_open:
                 self._active_text_lines = None
+                self._written_tiles_line1 = None
                 self._textbox_handled = False
+                self._page_change_cooldown = 0
             self._was_textbox_open = False
             return
         
+        # Tick down page-change cooldown
+        if self._page_change_cooldown > 0:
+            self._page_change_cooldown -= 1
+        
+        # Detect page change: game clears/replaces the textbox for a new paragraph.
+        # Require >= 10 tiles different (out of 18) = real page clear, not char-by-char rendering.
+        # Also require cooldown expired so we don't rapid-fire on text streaming.
+        if (self._written_tiles_line1 and self._active_text_lines
+                and self._page_change_cooldown <= 0):
+            current = self.battle_state.read_tilemap_row(14, 1, 19)
+            diffs = sum(1 for a, b in zip(current, self._written_tiles_line1) if a != b)
+            if diffs >= 10:
+                cache = self._get_dialogue_cache()
+                # Game cleared textbox → new paragraph. Apply next cached dialogue.
+                if not in_battle and cache:
+                    line1, line2, _ts = cache.pop(0)
+                    log.info("💬 Next page: \"%s\" / \"%s\" (%d left)",
+                             line1, line2, len(cache))
+                    self._active_text_lines = (line1, line2)
+                    self._written_tiles_line1 = self.battle_state.text_to_tiles(line1, 18)
+                    self.battle_state.write_textbox(line1, line2)
+                    self._page_change_cooldown = 60  # ~1 second before next detection
+                    self.stats["dialogues_rewritten"] += 1
+                    if len(cache) < 2 and self._last_map_key:
+                        self._prefetch_area_dialogue(self._last_map_key)
+                elif in_battle:
+                    # In battle, don't rewrite text — let game text show through
+                    pass
+                else:
+                    # No more cache — stop overriding
+                    self._active_text_lines = None
+                    self._written_tiles_line1 = None
+                return
+        
         # Keep overwriting with our text every tick while textbox is open
-        if self._active_text_lines:
+        # But NOT in battle — battle UI is always "open" so we'd overwrite menus
+        if self._active_text_lines and not in_battle:
             self.battle_state.write_textbox(*self._active_text_lines)
         
         # Textbox just opened — decide how to handle
@@ -870,85 +1598,169 @@ class AIEmulator:
             self._was_textbox_open = True
             self._textbox_handled = True
             
+            raw_bm = self.battle_state._raw_battle_mode()
+            cache = self._get_dialogue_cache()
+            log.debug("📦 Textbox opened: in_battle=%s raw_bm=%d cache=%d",
+                       in_battle, raw_bm, len(cache))
+            
             if not self.ai_config.enabled:
                 return
             
-            in_battle = self.battle_state._raw_battle_mode() != 0
-            
             # --- OVERWORLD: use cached dialogue (instant, never blocks) ---
             if not in_battle:
-                if self._dialogue_cache:
-                    line1, line2 = self._dialogue_cache.pop(0)
+                # Raw battle mode 1=wild 2=trainer means battle transition;
+                # don't overlay NPC text onto battle intro textboxes
+                if raw_bm in (1, 2):
+                    log.debug("  Skipping NPC text: raw battle mode = %d", raw_bm)
+                    return
+                if cache:
+                    line1, line2, _ts = cache.pop(0)
                     log.info("💬 Cached: \"%s\" / \"%s\" (%d left)",
-                             line1, line2, len(self._dialogue_cache))
+                             line1, line2, len(cache))
                     self._active_text_lines = (line1, line2)
+                    self._written_tiles_line1 = self.battle_state.text_to_tiles(line1, 18)
                     self.battle_state.write_textbox(line1, line2)
+                    self._page_change_cooldown = 60  # ~1s before page-change detection starts
                     self.stats["dialogues_rewritten"] += 1
-                    if len(self._dialogue_cache) < 2:
-                        self._prefetch_area_dialogue()
+                    if len(cache) < 2 and self._last_map_key:
+                        self._prefetch_area_dialogue(self._last_map_key)
                 return
             
-            # --- BATTLE: blocking AI call with context ---
-            for _ in range(90):
-                self.pyboy.tick()
-                self.stats["ticks"] += 1
-            
-            original_text = self.battle_state.read_textbox()
-            if not original_text or len(original_text) < 3:
-                return
-            
-            location = self.battle_state.get_location()
-            state = self.battle_state.get_battle_state()
-            battle_ctx = ""
-            if state:
-                your = state["your_pokemon"]
-                opp = state["opponent"]
-                battle_ctx = (f" {pokemon_name(your['pokemon_id'])} "
-                              f"vs {pokemon_name(opp['pokemon_id'])}.")
-            
-            log.info("⚔️ Battle text: \"%s\" [%s%s]",
-                     original_text, location, battle_ctx)
-            
-            t0 = time.perf_counter()
+            # --- BATTLE: skip text rewrite, let game text show through ---
+            # Battle text rewriting is handled asynchronously; don't block here
+            return
+    
+    def _blocking_rewrite_battle_text(self, original_text):
+        """Blocking battle text rewrite: shows '...thinking', ticks game while waiting.
+        Returns (line1, line2) when AI responds, or None on failure.
+        The player cannot advance the textbox because we keep writing '...thinking' every tick."""
+        import re, time as _time
+        ctx = self._get_context_str()
+        state = self.battle_state.get_battle_state()
+        battle_ctx = ""
+        if state:
+            your = state["your_pokemon"]
+            opp = state["opponent"]
+            battle_ctx = (f" {pokemon_name(your['pokemon_id'])} "
+                          f"vs {pokemon_name(opp['pokemon_id'])}.")
+        log.info("⚔️ Battle text: \"%s\" [%s]", original_text, battle_ctx.strip())
+
+        result_box = [None]
+        result_ready = threading.Event()
+        self._battle_priority.clear()  # pause prefetch threads
+
+        def _do():
             prompt = (
-                f"BATTLE TEXTBOX.{battle_ctx} Original: \"{original_text}\" "
+                f"BATTLE TEXTBOX. {ctx}{battle_ctx} Original: \"{original_text}\" "
                 f"Rewrite as funny battle commentary. "
                 f"STRICT: line1 and line2 each MAX 18 chars. "
-                f"ONLY letters digits and spaces. NO punctuation."
+                f"Allowed: letters, digits, spaces, ? ! . , ' - : & only."
             )
+            t0 = _time.perf_counter()
             raw = self.copilot.call(prompt)
-            elapsed_ms = (time.perf_counter() - t0) * 1000
-            
+            elapsed_ms = (_time.perf_counter() - t0) * 1000
             result = parse_json_response(raw, expected_key="line1")
             if result and ("line1" in result or "line2" in result):
-                import re
-                line1 = re.sub(r'[^A-Za-z0-9 ]', '',
+                line1 = re.sub(r"[^A-Za-z0-9 ?!.,'\-:&]", '',
                                str(result.get("line1", "")))[:18]
-                line2 = re.sub(r'[^A-Za-z0-9 ]', '',
+                line2 = re.sub(r"[^A-Za-z0-9 ?!.,'\-:&]", '',
                                str(result.get("line2", "")))[:18]
-                log.info("  ✏️  Rewritten (%.0fms): \"%s\" / \"%s\"",
+                result_box[0] = (line1, line2)
+                log.info("  ✏️  Battle rewrite (%.0fms): \"%s\" / \"%s\"",
                          elapsed_ms, line1, line2)
-                self._active_text_lines = (line1, line2)
-                self.battle_state.write_textbox(line1, line2)
-                self.stats["dialogues_rewritten"] += 1
             else:
-                log.warning("  Battle text AI bad response: %s", raw)
-    
+                log.warning("  Battle rewrite bad response: %s", raw)
+            self._battle_priority.set()  # resume prefetch threads
+            result_ready.set()
+
+        threading.Thread(target=_do, daemon=True).start()
+
+        # Block: keep ticking (window stays alive) while showing "...thinking"
+        while not result_ready.is_set():
+            if not self._tick_no_input():
+                return None  # window closed
+            self.battle_state.write_textbox("", "...thinking")
+
+        return result_box[0]
+
+    def _load_dialogue_cache(self):
+        """Load persisted dialogue cache. Invalidate on vibe change.
+        On load we use a generous 30-min max TTL; runtime filtering uses distance-based TTL."""
+        try:
+            if os.path.exists(self._dialogue_cache_path):
+                with open(self._dialogue_cache_path, "r", encoding="utf-8") as f:
+                    raw = json.load(f)
+                saved_vibe = raw.get("_vibe", "")
+                if saved_vibe != self.ai_config.vibe:
+                    log.info("📂 Dialogue cache invalidated: vibe changed (%s → %s)",
+                             saved_vibe, self.ai_config.vibe)
+                    return
+                now = time.time()
+                areas = raw.get("areas", {})
+                loaded_areas = 0
+                loaded_lines = 0
+                dropped_lines = 0
+                for k, v in areas.items():
+                    g, n = k.split(",")
+                    # Generous 30-min filter on load; real TTL applied at access time
+                    fresh = [(l1, l2, ts) for l1, l2, ts in v if now - ts < 1800]
+                    dropped_lines += len(v) - len(fresh)
+                    if fresh:
+                        self._dialogue_store[(int(g), int(n))] = fresh
+                        loaded_areas += 1
+                        loaded_lines += len(fresh)
+                log.info("📂 Loaded dialogue cache: %d lines across %d areas (%d stale lines dropped)",
+                         loaded_lines, loaded_areas, dropped_lines)
+        except Exception as e:
+            log.warning("Could not load dialogue cache: %s", e)
+
+    def _save_dialogue_cache(self):
+        """Persist dialogue cache to disk with vibe and per-line timestamps."""
+        try:
+            areas = {f"{g},{n}": list(v)
+                     for (g, n), v in self._dialogue_store.items() if v}
+            payload = {
+                "_vibe": self.ai_config.vibe,
+                "areas": areas,
+            }
+            with open(self._dialogue_cache_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False)
+        except Exception as e:
+            log.warning("Could not save dialogue cache: %s", e)
+
+    def _save_screenshot(self):
+        """Save a compressed screenshot into a rolling 1024-frame buffer (0000.jpg..1023.jpg)."""
+        try:
+            img = self.pyboy.screen.image.convert("RGB")
+            fname = f"{self._screenshot_index:04d}.jpg"
+            img.save(os.path.join(self.SCREENSHOT_DIR, fname),
+                     format="JPEG", quality=55, optimize=True)
+            self._screenshot_index = (self._screenshot_index + 1) % self._SCREENSHOT_MAX
+        except Exception as e:
+            log.debug("Screenshot failed: %s", e)
+
     def _log_stats(self):
         s = self.stats
         uptime = time.time() - s["start_time"] if s["start_time"] else 0
         avg = (s["total_api_ms"] / s["ai_calls"]) if s["ai_calls"] else 0
-        log.info("📊 Stats: %ds | %d battles | %d AI calls (%.0fms avg) | "
-                 "%d dialogues | %d errors",
+        cached = sum(len(v) for v in self._dialogue_store.values())
+        pending = len(self._dialogue_pending)
+        log.info("📊 Stats: %ds | %d battles | %d battle AI calls (%.0fms avg) | "
+                 "%d dialogues | %d cached lines | %d prefetch pending | %d errors",
                  uptime, s["battles"], s["ai_calls"], avg,
-                 s["dialogues_rewritten"], s["ai_errors"])
+                 s["dialogues_rewritten"], cached, pending, s["ai_errors"])
     
-    def run(self):
+    def run(self, speed=1):
         """Main emulator loop"""
         if not self.pyboy:
             self.start()
         
-        log.info("🎮 Emulator running — walk into tall grass!")
+        if speed != 1:
+            self.pyboy.set_emulation_speed(speed)
+            label = "UNLIMITED" if speed == 0 else f"{speed}x"
+            log.info("🎮 Emulator running at %s speed — walk into tall grass!", label)
+        else:
+            log.info("🎮 Emulator running — walk into tall grass!")
         
         was_in_battle = False
         stats_interval = 600  # log stats every ~10s
@@ -959,6 +1771,9 @@ class AIEmulator:
                     log.info("Window closed.")
                     break
                 self.stats["ticks"] += 1
+                
+                # Warp guard: prevent game scripts from kidnapping the player
+                self._check_warp_guard()
                 
                 in_battle = self.battle_state.is_in_battle()
                 
@@ -979,6 +1794,10 @@ class AIEmulator:
                         log.info("  vs. Player's %s (HP: %d)",
                                  pokemon_name(opp["pokemon_id"]), opp["hp"])
                         log.info("═══════════════════════════════════════")
+                        ename = pokemon_name(your["pokemon_id"])
+                        pname = pokemon_name(opp["pokemon_id"])
+                        self._log_event(
+                            f"Wild Lv{your.get('level','?')} {ename} appeared vs {pname}")
                     was_in_battle = True
                 
                 if not in_battle and was_in_battle:
@@ -986,6 +1805,15 @@ class AIEmulator:
                     log.info("🏁 BATTLE #%d ENDED", self.stats["battles"])
                     log.info("═══════════════════════════════════════")
                     was_in_battle = False
+                    # Log outcome with HP remaining
+                    state = self.battle_state.get_battle_state()
+                    if state:
+                        opp = state["opponent"]
+                        self._log_event(
+                            f"Beat battle #{self.stats['battles']}, "
+                            f"{pokemon_name(opp['pokemon_id'])} at {opp['hp']}HP")
+                    else:
+                        self._log_event(f"Beat battle #{self.stats['battles']}")
                     self._request_next_encounter()  # pre-fetch for next encounter
                 
                 if in_battle:
@@ -997,7 +1825,7 @@ class AIEmulator:
                     if self._encounter_applied:
                         self._encounter_applied = False
                         self._request_next_encounter()
-                    # Detect map change → pre-fetch area dialogue
+                    # Detect map change → pre-fetch area dialogue + adjacent areas
                     current_map = (self.pyboy.memory[0xDCB5],
                                    self.pyboy.memory[0xDCB6])
                     if (current_map != self._last_map_key
@@ -1007,12 +1835,13 @@ class AIEmulator:
                         self._last_map_change_time = time.time()
                         location = self.battle_state.get_location()
                         log.info("🗺️  Entered: %s", location)
-                        self._dialogue_cache.clear()
-                        self._prefetch_area_dialogue()
+                        self._log_event(f"Entered {location}")
+                        self._prefetch_area_dialogue(current_map, location, include_npcs=True)
+                        self._prefetch_adjacent_areas(current_map)
                         self._request_next_encounter()
                 
-                # Handle text boxes — blocking call + continuous overwrite
-                self._handle_textbox()
+                # Handle text boxes
+                self._handle_textbox(in_battle)
                 
                 # Latch AI decision; continuously write move index every tick
                 if self._latest_decision:
@@ -1020,12 +1849,20 @@ class AIEmulator:
                     self._current_battle_move = mi
                     self._latest_decision = None
                 if in_battle and self._current_battle_move is not None:
-                    self.battle_state.set_enemy_move(self._current_battle_move)
+                    enemy_hp = self.battle_state._read_hp(
+                        self.battle_state.ENEMY_HP_ADDR)
+                    if enemy_hp > 0:
+                        self.battle_state.set_enemy_move(self._current_battle_move)
+                    else:
+                        self._current_battle_move = None
                 if not in_battle:
                     self._current_battle_move = None
                 
                 if self.stats["ticks"] % stats_interval == 0:
                     self._log_stats()
+                
+                if self.stats["ticks"] % 60 == 0:
+                    self._save_screenshot()
                 
         except KeyboardInterrupt:
             log.info("Stopping emulator...")
@@ -1038,6 +1875,7 @@ class AIEmulator:
             self.stop()
     
     def stop(self):
+        self._save_dialogue_cache()
         if self.pyboy:
             self.pyboy.stop()
         log.info("Emulator stopped.")
@@ -1053,14 +1891,18 @@ def main():
                         help="Disable AI calls (run emulator only)")
     parser.add_argument("--vibe", default="exciting but not fatal",
                         help="AI vibe/personality (default: 'exciting but not fatal')")
+    parser.add_argument("--model", default=COPILOT_MODEL,
+                        help="Copilot model (default: %(default)s)")
+    parser.add_argument("--speed", type=int, default=2,
+                        help="Emulation speed multiplier (0=unlimited, 1=normal, 2=2x, etc.)")
     
     args = parser.parse_args()
     
     config = AIConfig(vibe=args.vibe)
     config.enabled = not args.no_ai
     
-    emulator = AIEmulator(args.rom, config)
-    emulator.run()
+    emulator = AIEmulator(args.rom, config, model=args.model)
+    emulator.run(speed=args.speed)
 
 if __name__ == "__main__":
     main()
